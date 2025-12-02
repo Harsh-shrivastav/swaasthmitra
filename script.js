@@ -436,3 +436,25 @@ window.addEventListener('load', function() {
         addMessageToChat(firstMessage);
     }
 });
+
+function updateRealTime() {
+    const timeSpan = document.getElementById("live-time");
+    const now = new Date();
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let ampm = hours >= 12 ? "PM" : "AM";
+
+    // Convert 24h → 12h
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 → 12
+
+    // Format minutes
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+
+    timeSpan.textContent = `${hours}:${minutes} ${ampm}`;
+}
+
+// Update every second
+setInterval(updateRealTime, 1000);
+updateRealTime();

@@ -72,16 +72,45 @@
                         <div class="chat-messages" id="chatMessages">
                             <div class="message message-bot">
                                 <div class="message-avatar">
-                                    <div class="avatar-icon">🏥</div>
+                                    <div class="avatar-icon">🩺</div>
                                 </div>
                                 <div class="message-bubble">
                                     <div class="message-header">
-                                        <span class="sender-name">Swaasthya Sahayak</span>
+                                        <span class="sender-name">Dr. Swaasthya</span>
                                         <span class="message-time">Just now</span>
                                     </div>
                                     <div class="message-text">
-                                        Namaste! I am your AI health assistant. How can I help you today? You can describe your symptoms, ask about medications, or get health advice.
+                                        <div class="greeting-message">
+                                            <strong>Namaste! I'm Dr. Swaasthya, your AI medical assistant.</strong>
+                                        </div>
+                                        <div class="consultation-intro">
+                                            I'm here to help assess your symptoms and provide medical guidance. Let's start with some basic information:
+                                        </div>
+                                        <div class="quick-questions">
+                                            <button class="medical-question-btn" onclick="startMedicalConsultation()">🩺 Start Medical Assessment</button>
+                                            <button class="medical-question-btn" onclick="startEmergencyMode()">🚨 This is an Emergency</button>
+                                        </div>
+                                        <div class="medical-disclaimer">
+                                            <small><em>⚠️ This is not a substitute for professional medical advice. Always consult healthcare providers for serious conditions.</em></small>
+                                        </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Typing Indicator -->
+                        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                            <div class="message message-bot">
+                                <div class="message-avatar">
+                                    <div class="avatar-icon">🩺</div>
+                                </div>
+                                <div class="typing-bubble">
+                                    <div class="typing-dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <span class="typing-text">Dr. Swaasthya is analyzing...</span>
                                 </div>
                             </div>
                         </div>
@@ -96,34 +125,52 @@
                         </div>
                     </div>
 
+                    <!-- Symptom Suggestions -->
+                    <div class="symptom-suggestions" id="symptomSuggestions" style="display: none;">
+                        <div class="suggestions-header">Common symptoms:</div>
+                        <div class="suggestions-list" id="suggestionsList"></div>
+                    </div>
+
                     <!-- Chat Input Area -->
                     <div class="chat-input-container">
                         <div class="chat-input-area">
-                            <input type="text" id="chatInput" class="chat-input" placeholder="Describe your symptoms or ask a health question...">
-                            
-                            <button class="icon-button" id="micButton" title="Voice Input">
-                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                                    <line x1="12" y1="19" x2="12" y2="23"></line>
-                                    <line x1="8" y1="23" x2="16" y2="23"></line>
-                                </svg>
-                            </button>
-                            
-                            <button class="icon-button btn-send" id="sendButton" title="Send Message">
-                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                </svg>
-                            </button>
+                            <div class="input-wrapper">
+                                <input type="text" id="chatInput" class="chat-input" placeholder="Type your symptoms (e.g., 'fever and headache for 2 days')..." autocomplete="off">
+                                <div class="input-actions">
+                                    <button class="icon-button" id="micButton" title="Voice Input">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                                        </svg>
+                                    </button>
+                                    
+                                    <button class="icon-button btn-send" id="sendButton" title="Send Message">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Quick Actions -->
-                        <div class="quick-actions">
-                            <button class="quick-action-btn" data-message="I have fever">🤒 Fever</button>
-                            <button class="quick-action-btn" data-message="chest pain">⚠️ Chest Pain</button>
-                            <button class="quick-action-btn" data-message="headache">💭 Headache</button>
-                            <button class="quick-action-btn" data-message="pregnancy checkup">👶 Pregnancy</button>
+                        <!-- Medical Quick Actions -->
+                        <div class="medical-quick-actions">
+                            <div class="action-group">
+                                <div class="action-group-title">Common Conditions</div>
+                                <button class="medical-action-btn" data-message="fever with body ache for 3 days">🤒 Fever & Body Ache</button>
+                                <button class="medical-action-btn" data-message="severe headache with nausea">🤕 Severe Headache</button>
+                                <button class="medical-action-btn" data-message="stomach pain and vomiting">🤢 Stomach Issues</button>
+                                <button class="medical-action-btn" data-message="cough and cold symptoms">🤧 Cold & Cough</button>
+                            </div>
+                            <div class="action-group">
+                                <div class="action-group-title">Emergency Situations</div>
+                                <button class="medical-action-btn emergency" data-message="chest pain and difficulty breathing">⚠️ Chest Pain</button>
+                                <button class="medical-action-btn emergency" data-message="severe injury with bleeding">🩸 Severe Injury</button>
+                                <button class="medical-action-btn emergency" data-message="pregnancy emergency complications">🤱 Pregnancy Emergency</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -166,30 +213,171 @@
         </div>
     </section>
 
-    <script src="script.js"></script>
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load medical chat system -->
+    <script src="medical-chat.js"></script>
+    
     <script>
-        // Initialize chat page specific functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-focus on chat input
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.focus();
-            }
+        // Emergency Mode Function
+        function startEmergencyMode() {
+            const emergencyHTML = `
+                <div class="emergency-alert">
+                    <div class="emergency-header">
+                        <h2>🚨 EMERGENCY PROTOCOL ACTIVATED</h2>
+                    </div>
+                    <div class="emergency-content">
+                        <div class="immediate-actions">
+                            <h3>IMMEDIATE ACTIONS:</h3>
+                            <ol>
+                                <li><strong>CALL 108</strong> (Emergency Services) immediately</li>
+                                <li>Stay calm and provide your location</li>
+                                <li>If possible, have someone stay with you</li>
+                                <li>Do not leave the patient alone</li>
+                            </ol>
+                        </div>
+                        <div class="emergency-buttons">
+                            <a href="tel:108" class="emergency-call-btn">📞 CALL 108 NOW</a>
+                        </div>
+                        <div class="emergency-disclaimer">
+                            <strong>This is not a substitute for emergency medical services. Always call professional emergency services first.</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            medicalChat.addMessageToChat({
+                id: Date.now().toString(),
+                role: 'assistant',
+                content: emergencyHTML,
+                timestamp: new Date(),
+                isEmergency: true
+            });
+        }
 
-            // Add quick action functionality
-            const quickActionBtns = document.querySelectorAll('.quick-action-btn');
-            quickActionBtns.forEach(btn => {
+        // Initialize medical consultation system
+        document.addEventListener('DOMContentLoaded', function() {
+            // Character count for text areas
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('medical-textarea')) {
+                    const charCount = document.getElementById('charCount_' + e.target.id.split('_')[1]);
+                    if (charCount) {
+                        charCount.textContent = `${e.target.value.length}/1000`;
+                    }
+                }
+            });
+
+            // Medical action buttons functionality
+            const medicalActionBtns = document.querySelectorAll('.medical-action-btn');
+            medicalActionBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const message = this.getAttribute('data-message');
-                    if (chatInput) {
-                        chatInput.value = message;
-                        sendMessage(message);
-                        chatInput.value = '';
-                        chatInput.focus();
+                    if (message) {
+                        if (this.classList.contains('emergency')) {
+                            startEmergencyMode();
+                        } else {
+                            // Start consultation with pre-filled complaint
+                            medicalChat.patientData.answers['primary_concern'] = message;
+                            medicalChat.startConsultation();
+                        }
                     }
                 });
             });
+
+            // Handle regular chat input (fallback)
+            const chatInput = document.getElementById('chatInput');
+            const sendButton = document.getElementById('sendButton');
+            
+            if (sendButton && chatInput) {
+                sendButton.addEventListener('click', function() {
+                    const message = chatInput.value.trim();
+                    if (message) {
+                        if (!medicalChat.isInProgress) {
+                            // Start consultation with user's message as chief complaint
+                            medicalChat.patientData.answers['primary_concern'] = message;
+                            medicalChat.startConsultation();
+                        } else {
+                            // Add as general message if consultation in progress
+                            medicalChat.addMessageToChat({
+                                id: Date.now().toString(),
+                                role: 'user',
+                                content: message,
+                                timestamp: new Date()
+                            });
+                        }
+                        chatInput.value = '';
+                    }
+                });
+            }
+
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendButton.click();
+                    }
+                });
+            }
         });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInFromLeft {
+                0% {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            
+            .start-consultation-btn {
+                background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+                color: white;
+                border: none;
+                padding: 1rem 2rem;
+                border-radius: var(--radius-lg);
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+                margin: 1rem 0;
+                width: 100%;
+            }
+            
+            .start-consultation-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
+            }
+            
+            .config-error {
+                background-color: rgba(239, 68, 68, 0.1);
+                border: 2px solid #dc2626;
+                border-radius: var(--radius-lg);
+                padding: 2rem;
+                text-align: center;
+                color: #dc2626;
+            }
+            
+            .config-instructions {
+                background-color: white;
+                border-radius: var(--radius-md);
+                padding: 1rem;
+                margin-top: 1rem;
+                text-align: left;
+            }
+            
+            .config-instructions code {
+                background-color: var(--muted);
+                padding: 0.25rem 0.5rem;
+                border-radius: var(--radius-sm);
+                font-family: monospace;
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

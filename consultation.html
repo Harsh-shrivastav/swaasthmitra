@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Consultation - Swaasthmitra</title>
+    <style>
+        /* Full Screen Medical Consultation Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --secondary: #14b8a6;
+            --background: #f8fafc;
+            --foreground: #1f2937;
+            --card: #ffffff;
+            --muted: #e5e7eb;
+            --muted-foreground: #6b7280;
+            --border: #d1d5db;
+            --emerald-50: #ecfdf5;
+            --emerald-600: #059669;
+            --red-600: #dc2626;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--background), var(--emerald-50));
+            color: var(--foreground);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .consultation-container {
+            display: flex;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--emerald-50), #f0fdfa);
+        }
+
+        .consultation-sidebar {
+            width: 320px;
+            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .consultation-progress {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .progress-step {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .progress-step.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left-color: white;
+        }
+
+        .progress-step.completed {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: #10b981;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-description {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .sidebar-footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .emergency-btn {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .emergency-btn:hover {
+            background: var(--red-600);
+            transform: translateY(-2px);
+        }
+
+        .consultation-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+        }
+
+        .main-header {
+            padding: 1.5rem 2rem;
+            background: var(--card);
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .consultation-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--emerald-600);
+        }
+
+        .consultation-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            background: linear-gradient(to bottom, var(--background), var(--card));
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, var(--foreground), var(--muted-foreground));
+            color: white;
+        }
+
+        .message-content {
+            flex: 1;
+            max-width: 70%;
+        }
+
+        .message-bubble {
+            background: var(--card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+            color: white;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .message.user .message-header {
+            border-bottom-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .sender-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--emerald-600);
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            background: var(--emerald-600);
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingDot {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .option-btn {
+            padding: 1rem 1.5rem;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--emerald-50);
+            border-color: var(--emerald-600);
+            color: var(--emerald-600);
+            transform: translateX(4px);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+            color: white;
+            border-color: var(--emerald-600);
+        }
+
+        .option-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .input-area {
+            padding: 1.5rem 2rem;
+            background: var(--card);
+            border-top: 2px solid var(--border);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .message-input:focus {
+            border-color: var(--emerald-600);
+        }
+
+        .send-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading States */
+        .loading-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted-foreground);
+        }
+
+        .assessment-section {
+            background: var(--emerald-50);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin: 1rem 0;
+            border: 2px solid var(--emerald-600);
+        }
+
+        .soap-note {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 1rem;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .consultation-container {
+                flex-direction: column;
+            }
+
+            .consultation-sidebar {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                padding: 1rem;
+            }
+
+            .progress-steps {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .progress-step {
+                min-width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .consultation-sidebar {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .messages-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="consultation-container">
+        <!-- Sidebar with Progress -->
+        <div class="consultation-sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">🩺</div>
+                    <div class="logo-text">Swaasthmitra</div>
+                </div>
+                <div class="consultation-subtitle">AI Medical Consultation</div>
+            </div>
+
+            <div class="consultation-progress">
+                <div class="progress-header">Consultation Progress</div>
+                <div class="progress-steps">
+                    <div class="progress-step" id="step-demographics">
+                        <div class="step-title">👤 Demographics</div>
+                        <div class="step-description">Basic information</div>
+                    </div>
+                    <div class="progress-step" id="step-complaint">
+                        <div class="step-title">🩺 Chief Complaint</div>
+                        <div class="step-description">Main health concern</div>
+                    </div>
+                    <div class="progress-step" id="step-details">
+                        <div class="step-title">📋 Symptom Details</div>
+                        <div class="step-description">Detailed questioning</div>
+                    </div>
+                    <div class="progress-step" id="step-history">
+                        <div class="step-title">📚 Medical History</div>
+                        <div class="step-description">Past medical information</div>
+                    </div>
+                    <div class="progress-step" id="step-assessment">
+                        <div class="step-title">📝 Assessment</div>
+                        <div class="step-description">AI analysis & SOAP</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="emergency-btn" onclick="handleEmergency()">
+                    🚨 Emergency? Call 108
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="consultation-main">
+            <div class="main-header">
+                <div>
+                    <div class="consultation-title">Medical Consultation</div>
+                    <div class="consultation-meta">
+                        <span id="consultation-date"></span>
+                        <span id="consultation-status">Ready to start</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-area">
+                <div class="messages-container" id="messagesContainer">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+
+                <div class="input-area">
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            class="message-input" 
+                            placeholder="Type your message or use the suggested responses..."
+                            disabled
+                        >
+                        <button id="sendBtn" class="send-btn" onclick="sendMessage()" disabled>
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Enhanced Medical Consultation System
+        class FullScreenMedicalChat {
+            constructor() {
+                this.apiKey = CONFIG.GEMINI_API_KEY;
+                this.currentStep = 'welcome';
+                this.patientData = {
+                    demographics: {},
+                    chiefComplaint: '',
+                    symptoms: {},
+                    history: {},
+                    conversationHistory: []
+                };
+                this.isProcessing = false;
+                this.stepIndex = 0;
+                this.steps = ['demographics', 'complaint', 'details', 'history', 'assessment'];
+            }
+
+            async init() {
+                this.updateDate();
+                
+                // Check if API key is configured
+                if (!this.apiKey || this.apiKey === 'YOUR_API_KEY_HERE') {
+                    this.showApiKeyError();
+                    return;
+                }
+                
+                this.showWelcomeMessage();
+                this.setupEventListeners();
+            }
+            
+            showApiKeyError() {
+                this.addMessage('assistant', `
+                    <div style="text-align: center; padding: 2rem; background: rgba(220, 38, 38, 0.1); border-radius: var(--radius-lg); border: 2px solid #dc2626;">
+                        <h2 style="color: #dc2626; margin-bottom: 1rem;">⚠️ API Configuration Required</h2>
+                        <p style="margin-bottom: 2rem; color: var(--foreground);">
+                            The Gemini API key is not properly configured. The consultation system requires a valid API key to function.
+                        </p>
+                        <div style="background: var(--card); border-radius: var(--radius-lg); padding: 1.5rem; margin: 1rem 0; text-align: left;">
+                            <h3 style="color: var(--emerald-600); margin-bottom: 1rem;">How to set up the API key:</h3>
+                            <ol style="color: var(--foreground); line-height: 1.6;">
+                                <li>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--emerald-600);">Google AI Studio</a></li>
+                                <li>Create a new API key for Gemini</li>
+                                <li>Open the <code>config.js</code> file</li>
+                                <li>Replace the API key value</li>
+                                <li>Refresh this page</li>
+                            </ol>
+                        </div>
+                        <p style="font-size: 0.875rem; color: var(--muted-foreground); margin-top: 1rem;">
+                            Current API key: ${this.apiKey ? this.apiKey.substring(0, 10) + '...' : 'Not configured'}
+                        </p>
+                    </div>
+                `);
+            }
+
+            updateDate() {
+                const dateElement = document.getElementById('consultation-date');
+                dateElement.textContent = new Date().toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+
+            setupEventListeners() {
+                const messageInput = document.getElementById('messageInput');
+                const sendBtn = document.getElementById('sendBtn');
+
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+
+                sendBtn.addEventListener('click', () => this.sendMessage());
+            }
+
+            updateProgress(step) {
+                // Reset all steps
+                document.querySelectorAll('.progress-step').forEach(el => {
+                    el.classList.remove('active', 'completed');
+                });
+
+                // Mark completed steps
+                const stepIndex = this.steps.indexOf(step);
+                this.steps.slice(0, stepIndex).forEach(stepName => {
+                    document.getElementById(`step-${stepName}`).classList.add('completed');
+                });
+
+                // Mark current step as active
+                if (stepIndex >= 0) {
+                    document.getElementById(`step-${step}`).classList.add('active');
+                }
+            }
+
+            showWelcomeMessage() {
+                this.addMessage('assistant', `
+                    <div style="text-align: center; padding: 2rem;">
+                        <h2 style="color: var(--emerald-600); margin-bottom: 1rem;">🩺 Welcome to Swaasthmitra Medical Consultation</h2>
+                        <p style="margin-bottom: 2rem; color: var(--muted-foreground);">
+                            I'm Dr. Swaasthya, your AI medical assistant. I'll conduct a comprehensive medical consultation 
+                            with you today, asking questions based on your responses to provide the best possible assessment.
+                        </p>
+                        <div style="background: var(--emerald-50); border-radius: var(--radius-lg); padding: 1.5rem; margin: 1rem 0;">
+                            <h3 style="color: var(--emerald-600); margin-bottom: 1rem;">What to expect:</h3>
+                            <ul style="text-align: left; color: var(--foreground);">
+                                <li>📋 Personalized questions based on your responses</li>
+                                <li>🤖 AI-powered follow-up questions using Gemini</li>
+                                <li>🩺 Professional medical assessment</li>
+                                <li>📝 Complete SOAP note at the end</li>
+                                <li>💡 Personalized recommendations</li>
+                            </ul>
+                        </div>
+                        <button onclick="consultationApp.startConsultation()" style="
+                            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+                            color: white;
+                            border: none;
+                            padding: 1rem 2rem;
+                            border-radius: var(--radius-lg);
+                            font-size: 1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            margin-top: 1rem;
+                        ">
+                            🚀 Start Consultation
+                        </button>
+                        <div style="background: rgba(255, 193, 7, 0.1); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; font-size: 0.875rem; color: #d97706;">
+                            ⚠️ This consultation supplements but does not replace professional medical advice.
+                        </div>
+                    </div>
+                `);
+            }
+
+            async startConsultation() {
+                // Test API connection first
+                this.addMessage('assistant', '🔄 Initializing medical consultation system...');
+                
+                try {
+                    // Simple API test
+                    const testResponse = await fetch(`${CONFIG.GEMINI_API_URL}?key=${this.apiKey}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{ text: 'Hello' }]
+                            }],
+                            generationConfig: {
+                                temperature: 0.1,
+                                maxOutputTokens: 10,
+                            }
+                        })
+                    });
+                    
+                    if (!testResponse.ok) {
+                        throw new Error(`API test failed: ${testResponse.status}`);
+                    }
+                    
+                    // API is working
+                    this.addMessage('assistant', '✅ System initialized successfully!');
+                    
+                } catch (error) {
+                    console.error('API test failed:', error);
+                    this.addMessage('assistant', `
+                        <div style="background: rgba(255, 193, 7, 0.1); border-radius: var(--radius-md); padding: 1rem; margin: 1rem 0; border-left: 4px solid #f59e0b;">
+                            ⚠️ <strong>API Connection Issue</strong><br>
+                            The consultation will continue with basic functionality. Some advanced AI features may not be available.
+                            <br><br>
+                            <small>Error: ${error.message}</small>
+                        </div>
+                    `);
+                }
+
+                this.currentStep = 'demographics';
+                this.updateProgress('demographics');
+                this.updateStatus('Gathering demographics');
+                
+                // Enable input
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+
+                this.addMessage('assistant', `
+                    Let's start with some basic information to provide you with the most appropriate medical guidance.
+                    <div class="question-options">
+                        <div style="margin: 1rem 0; font-weight: 600;">First, what is your age range?</div>
+                        <p style="font-size: 0.9rem; color: var(--muted-foreground); margin: 0.5rem 0;">This helps me understand age-related health considerations</p>
+                    </div>
+                `, true);
+
+                this.showOptions([
+                    'Under 18 years',
+                    '18-30 years', 
+                    '31-45 years',
+                    '46-60 years',
+                    '61-75 years',
+                    'Over 75 years'
+                ]);
+            }
+
+            showOptions(options) {
+                const optionsHTML = options.map(option => 
+                    `<button class="option-btn" onclick="consultationApp.selectOption('${option}')">${option}</button>`
+                ).join('');
+                
+                setTimeout(() => {
+                    const lastMessage = document.querySelector('.message:last-child .message-bubble');
+                    lastMessage.innerHTML += `<div class="question-options">${optionsHTML}</div>`;
+                }, 500);
+            }
+
+            async selectOption(option) {
+                // Disable all option buttons
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.remove('option-btn');
+                });
+
+                // Add user message
+                this.addMessage('user', option);
+
+                // Store the response and get next question using AI
+                await this.processResponse(option);
+            }
+
+            async sendMessage() {
+                const input = document.getElementById('messageInput');
+                const message = input.value.trim();
+                
+                if (!message || this.isProcessing) return;
+
+                input.value = '';
+                this.addMessage('user', message);
+                
+                await this.processResponse(message);
+            }
+
+            async processResponse(response) {
+                this.isProcessing = true;
+                this.patientData.conversationHistory.push({
+                    role: 'user',
+                    content: response,
+                    step: this.currentStep,
+                    timestamp: new Date()
+                });
+
+                // Show thinking indicator
+                this.showTypingIndicator();
+
+                try {
+                    // Generate next question or assessment using Gemini
+                    const nextAction = await this.getNextQuestion(response);
+                    
+                    this.hideTypingIndicator();
+                    this.addMessage('assistant', nextAction.content, nextAction.hasOptions);
+                    
+                    if (nextAction.options) {
+                        this.showOptions(nextAction.options);
+                    }
+
+                    // Update step if needed
+                    if (nextAction.nextStep) {
+                        this.currentStep = nextAction.nextStep;
+                        this.updateProgress(nextAction.nextStep);
+                        this.updateStatus(this.getStepStatus(nextAction.nextStep));
+                    }
+
+                } catch (error) {
+                    console.error('Error processing response:', error);
+                    this.hideTypingIndicator();
+                    this.addMessage('assistant', '❌ Sorry, I encountered an error. Please try again or contact support if the issue persists.');
+                }
+
+                this.isProcessing = false;
+            }
+
+            async getNextQuestion(userResponse) {
+                const conversationContext = this.buildConversationContext();
+                const prompt = this.buildPromptForCurrentStep(userResponse, conversationContext);
+
+                try {
+                    console.log('Making API request to Gemini...', { prompt: prompt.substring(0, 100) + '...' });
+                    
+                    const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${this.apiKey}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{ text: prompt }]
+                            }],
+                            generationConfig: {
+                                temperature: 0.3,
+                                topK: 40,
+                                topP: 0.8,
+                                maxOutputTokens: 1024,
+                            }
+                        })
+                    });
+
+                    console.log('API response status:', response.status);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('API Error Details:', errorText);
+                        throw new Error(`API request failed: ${response.status} - ${errorText}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('API response data:', data);
+                    
+                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts[0]) {
+                        throw new Error('Invalid API response structure');
+                    }
+                    
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    
+                    return this.parseAIResponse(aiResponse);
+
+                } catch (error) {
+                    console.error('Gemini API Error:', error);
+                    
+                    // Provide fallback response based on current step
+                    return this.getFallbackResponse(userResponse);
+                }
+            }
+
+            getFallbackResponse(userResponse) {
+                // Provide fallback responses when API fails
+                switch(this.currentStep) {
+                    case 'demographics':
+                        if (userResponse.toLowerCase().includes('year')) {
+                            return {
+                                content: "Thank you. What is your gender?",
+                                options: ['Male', 'Female', 'Other', 'Prefer not to say'],
+                                nextStep: 'demographics',
+                                hasOptions: true
+                            };
+                        } else {
+                            return {
+                                content: "Thank you. Now, what is your main health concern or symptom that brought you here today?",
+                                options: null,
+                                nextStep: 'complaint',
+                                hasOptions: false
+                            };
+                        }
+                    
+                    case 'complaint':
+                        return {
+                            content: "I understand your concern about " + userResponse + ". Can you tell me when these symptoms started?",
+                            options: ['Today', 'Yesterday', 'A few days ago', 'A week ago', 'More than a week ago'],
+                            nextStep: 'details',
+                            hasOptions: true
+                        };
+                    
+                    case 'details':
+                        return {
+                            content: "Thank you for the details. Do you have any past medical conditions, allergies, or are you currently taking any medications?",
+                            options: null,
+                            nextStep: 'history',
+                            hasOptions: false
+                        };
+                    
+                    case 'history':
+                        return {
+                            content: `
+                            <div class="assessment-section">
+                                <h3>🩺 Medical Assessment</h3>
+                                <div class="soap-note">
+                                    <strong>SUBJECTIVE:</strong>
+                                    Patient reports: ${userResponse}
+                                    
+                                    <strong>OBJECTIVE:</strong>
+                                    Unable to perform physical examination remotely.
+                                    
+                                    <strong>ASSESSMENT:</strong>
+                                    Based on the information provided, this appears to be a condition that would benefit from professional medical evaluation.
+                                    
+                                    <strong>PLAN:</strong>
+                                    • Recommend consultation with a healthcare provider
+                                    • Monitor symptoms closely
+                                    • Seek immediate medical attention if symptoms worsen
+                                    • Call 108 for emergencies
+                                    
+                                    <strong>DISCLAIMER:</strong>
+                                    This assessment is for informational purposes only and does not replace professional medical advice.
+                                </div>
+                            </div>
+                            `,
+                            options: null,
+                            nextStep: null,
+                            hasOptions: false
+                        };
+                    
+                    default:
+                        return {
+                            content: "I apologize, but I'm having trouble processing your response right now. Could you please try again or contact support if this issue persists?",
+                            options: null,
+                            nextStep: null,
+                            hasOptions: false
+                        };
+                }
+            }
+
+            generateSystematicQuestions(step, userResponse) {
+                // Generate systematic medical questions based on current step
+                const questionSets = {
+                    'demographics_followup': [
+                        {
+                            content: "Thank you. What is your gender?",
+                            options: ['Male', 'Female', 'Other', 'Prefer not to say'],
+                            nextStep: 'demographics'
+                        },
+                        {
+                            content: "Do you have any chronic health conditions or take regular medications?",
+                            options: ['No chronic conditions', 'Have chronic conditions', 'Take regular medications', 'Both conditions and medications'],
+                            nextStep: 'complaint'
+                        }
+                    ],
+                    'complaint_details': [
+                        {
+                            content: `I understand you're concerned about "${userResponse}". This is important information. When did you first notice these symptoms?`,
+                            options: ['Today', 'Yesterday', '2-3 days ago', '1 week ago', 'More than 1 week ago', 'Gradual onset over weeks/months'],
+                            nextStep: 'details'
+                        }
+                    ],
+                    'symptom_severity': [
+                        {
+                            content: 'On a scale of 1-10, how would you rate the severity of your symptoms right now? (1 = very mild, 10 = severe/unbearable)',
+                            options: ['1-2 (Very mild)', '3-4 (Mild)', '5-6 (Moderate)', '7-8 (Severe)', '9-10 (Very severe)'],
+                            nextStep: 'details'
+                        },
+                        {
+                            content: 'How are these symptoms affecting your daily activities?',
+                            options: ['No impact on daily life', 'Minor inconvenience', 'Moderate impact', 'Significant impact', 'Unable to do normal activities'],
+                            nextStep: 'details'
+                        }
+                    ]
+                };
+                
+                // Return appropriate question set based on context
+                if (step === 'demographics' && userResponse.toLowerCase().includes('year')) {
+                    return questionSets.demographics_followup[0];
+                } else if (step === 'complaint') {
+                    return questionSets.complaint_details[0];
+                } else if (step === 'details') {
+                    return questionSets.symptom_severity[Math.floor(Math.random() * questionSets.symptom_severity.length)];
+                }
+                
+                return null;
+            }
+
+            buildConversationContext() {
+                return this.patientData.conversationHistory
+                    .map(msg => `${msg.role}: ${msg.content}`)
+                    .join('\n');
+            }
+
+            buildPromptForCurrentStep(userResponse, context) {
+                let prompt = `You are Dr. Swaasthya, an experienced medical AI conducting a comprehensive medical consultation. 
+
+CONVERSATION HISTORY:
+${context}
+User just responded: "${userResponse}"
+
+CURRENT CONSULTATION STEP: ${this.currentStep}
+
+INSTRUCTIONS:
+- Ask detailed, medically relevant follow-up questions based on the user's response
+- Use clinical reasoning and medical best practices
+- Ask about severity, duration, location, quality, timing, and associated symptoms
+- Provide 3-6 multiple choice options when appropriate to guide patients
+- Be thorough but empathetic in your questioning
+- Progress logically: demographics → chief complaint → detailed symptom analysis → medical/family history → comprehensive assessment
+
+MEDICAL QUESTIONING GUIDELINES:
+- For symptoms: Ask about SOCRATES (Site, Onset, Character, Radiation, Associations, Time course, Exacerbating/relieving factors, Severity)
+- For pain: Use 1-10 scale, ask about quality (sharp, dull, throbbing, burning)
+- For timing: Be specific about when symptoms started and pattern
+- For associated symptoms: Ask about related symptoms that could indicate specific conditions
+
+RESPONSE FORMAT:
+Return a JSON object with:
+{
+    "content": "Your detailed question or medical advice here",
+    "options": ["option1", "option2", "option3"] or null,
+    "nextStep": "demographics|complaint|details|history|assessment" or null,
+    "hasOptions": true/false
+}
+
+`;
+
+                switch(this.currentStep) {
+                    case 'demographics':
+                        prompt += `
+DEMOGRAPHICS STAGE - Collect basic info (age, gender, location if relevant)
+- If age was just provided, ask about gender
+- If basic demographics complete, move to "complaint" step
+- Keep questions simple and direct`;
+                        break;
+
+                    case 'complaint':
+                        prompt += `
+CHIEF COMPLAINT STAGE - Find out their main health concern
+- Ask what brings them in today / main health problem
+- Get them to describe their primary symptom or concern
+- After getting main complaint, move to "details" step`;
+                        break;
+
+                    case 'details':
+                        prompt += `
+SYMPTOM DETAILS STAGE - Comprehensive symptom analysis using SOCRATES method
+- SITE: Exact location, does it move or radiate?
+- ONSET: When did it start? Sudden or gradual? What were you doing?
+- CHARACTER: Quality of symptom (sharp, dull, cramping, burning, etc.)
+- RADIATION: Does it spread anywhere else?
+- ASSOCIATIONS: Other symptoms occurring at the same time?
+- TIME COURSE: Pattern over time, constant vs intermittent, getting better/worse?
+- EXACERBATING/RELIEVING factors: What makes it better or worse?
+- SEVERITY: Scale 1-10, impact on daily activities
+- Ask about red flag symptoms based on the complaint
+- Be systematic and thorough - ask 2-3 detailed questions minimum
+- After comprehensive symptom analysis, move to "history" step`;
+                        break;
+
+                    case 'history':
+                        prompt += `
+MEDICAL HISTORY STAGE - Past medical information
+- Ask about past medical conditions, surgeries, medications
+- Family history if relevant to current complaint
+- Allergies, social history if appropriate
+- After gathering relevant history, move to "assessment" step`;
+                        break;
+
+                    case 'assessment':
+                        prompt += `
+ASSESSMENT STAGE - Comprehensive medical analysis and recommendations
+- Generate a detailed SOAP note with:
+  * SUBJECTIVE: Complete symptom history and patient concerns
+  * OBJECTIVE: Acknowledge limitations of remote assessment
+  * ASSESSMENT: Differential diagnosis with most likely conditions ranked
+  * PLAN: Detailed recommendations including:
+    - Immediate actions needed
+    - When to seek medical care (routine vs urgent vs emergency)
+    - Self-care measures and lifestyle modifications
+    - Red flag symptoms to watch for
+    - Follow-up recommendations
+    - Preventive measures
+- Provide educational information about the likely condition
+- Include disclaimer about limitations of remote consultation
+- Be specific with actionable advice
+- Set nextStep to null`;
+                        break;
+                }
+
+                return prompt;
+            }
+
+            parseAIResponse(aiResponse) {
+                try {
+                    // Try to parse as JSON first
+                    const parsed = JSON.parse(aiResponse);
+                    return {
+                        content: parsed.content || aiResponse,
+                        options: parsed.options || null,
+                        nextStep: parsed.nextStep || null,
+                        hasOptions: parsed.hasOptions || false
+                    };
+                } catch (e) {
+                    // If not JSON, treat as plain text
+                    return {
+                        content: aiResponse,
+                        options: null,
+                        nextStep: null,
+                        hasOptions: false
+                    };
+                }
+            }
+
+            getStepStatus(step) {
+                const statusMap = {
+                    demographics: 'Collecting demographics',
+                    complaint: 'Understanding chief complaint', 
+                    details: 'Exploring symptoms',
+                    history: 'Gathering medical history',
+                    assessment: 'Generating assessment'
+                };
+                return statusMap[step] || 'In progress';
+            }
+
+            updateStatus(status) {
+                document.getElementById('consultation-status').textContent = status;
+            }
+
+            showTypingIndicator() {
+                const typingHTML = `
+                    <div class="typing-indicator">
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                        <span>Dr. Swaasthya is analyzing...</span>
+                    </div>
+                `;
+                this.addMessage('assistant', typingHTML, false, 'typing-message');
+            }
+
+            hideTypingIndicator() {
+                const typingMessage = document.querySelector('.typing-message');
+                if (typingMessage) {
+                    typingMessage.remove();
+                }
+            }
+
+            addMessage(role, content, hasOptions = false, additionalClass = '') {
+                const messagesContainer = document.getElementById('messagesContainer');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${role} ${additionalClass}`;
+                
+                const avatar = role === 'user' ? '👤' : '🩺';
+                const senderName = role === 'user' ? 'You' : 'Dr. Swaasthya';
+                
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">${avatar}</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div class="message-header">
+                                <span class="sender-name">${senderName}</span>
+                                <span class="message-time">${this.formatTime(new Date())}</span>
+                            </div>
+                            <div class="message-text">
+                                ${content}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                // Store in conversation history
+                this.patientData.conversationHistory.push({
+                    role: role,
+                    content: content,
+                    step: this.currentStep,
+                    timestamp: new Date()
+                });
+            }
+
+            formatTime(date) {
+                return date.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            }
+        }
+
+        // Emergency function
+        function handleEmergency() {
+            if (confirm('This will redirect you to emergency services. Continue?')) {
+                window.open('tel:108', '_self');
+            }
+        }
+
+        // Initialize the consultation app
+        const consultationApp = new FullScreenMedicalChat();
+
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            consultationApp.init();
+        });
+    </script>
+</body>
+</html>

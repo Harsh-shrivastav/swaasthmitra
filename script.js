@@ -236,10 +236,17 @@ function addMessageToChat(message) {
     chatMessages.appendChild(messageDiv);
     
     // Scroll to bottom
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    updateScroll(chatMessages);
     
     // Store message
     messages.push(message);
+}
+
+// Utility: scroll chat to bottom
+function updateScroll(chatBox) {
+    const box = chatBox || document.getElementById('chatMessages');
+    if (!box) return;
+    box.scrollTop = box.scrollHeight;
 }
 
 // Voice Input Toggle

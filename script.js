@@ -145,25 +145,28 @@ async function sendMessage(text) {
     };
 
     addMessageToChat(userMessage);
+    messages.push(userMessage);
 
     // Show typing indicator
     showTypingIndicator();
 
     // If offline mode is enabled, use local response logic
     if (isOfflineMode) {
-        // Simulate processing time
         const processingTime = text.length > 50 ? 2000 : 1500;
         setTimeout(() => {
             hideTypingIndicator();
             const botResponse = getBotResponse(text);
-            if (botResponse) addMessageToChat(botResponse);
+            if (botResponse) {
+                addMessageToChat(botResponse);
+                messages.push(botResponse);
+            }
         }, processingTime);
         return;
     }
 
     // Build prompt from recent messages (last 10) to send to server
     try {
-        const history = [...messages, userMessage]
+        const history = [...messages]
             .slice(-10)
             .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`)
             .join('\n');
@@ -173,13 +176,98 @@ async function sendMessage(text) {
             contents: [ { parts: [ { text: history } ] } ]
         };
 
-        const res = await fetch('/api/genai', {
+        // Try streaming first (progressive display)
+        await handleStreamingResponse(payload);
+
+    } catch (err) {
+        hideTypingIndicator();
+        addMessageToChat({ id: Date.now().toString(), role: 'bot', text: 'Error communicating with server.', timestamp: new Date() });
+        console.error('sendMessage error', err);
+    }
+}
+
+// Handle Server-Sent Events streaming response
+async function handleStreamingResponse(payload) {
+    try {
+        const res = await fetch('/api/genai/stream', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
+        if (!res.ok) {
+            hideTypingIndicator();
+            const err = await res.text();
+            addMessageToChat({ id: Date.now().toString(), role: 'bot', text: 'Error: ' + err, timestamp: new Date() });
+            return;
+        }
+
+        // Create a container for the streaming bot message
+        const botMessageId = Date.now().toString();
+        const botMessage = { id: botMessageId, role: 'bot', text: '', timestamp: new Date() };
+        addMessageToChat(botMessage);
         hideTypingIndicator();
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        // Read stream chunks
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines[lines.length - 1]; // Keep incomplete line in buffer
+
+            for (let i = 0; i < lines.length - 1; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('data: ')) {
+                    const data = line.slice(6);
+                    if (data === '[DONE]') {
+                        // Stream finished
+                        const msg = messages.find(m => m.id === botMessageId);
+                        if (msg) {
+                            msg.text = botMessage.text;
+                            messages.push(msg);
+                        }
+                        return;
+                    }
+
+                    try {
+                        const chunk = JSON.parse(data);
+                        if (chunk.text) {
+                            botMessage.text += chunk.text;
+                            // Update the displayed message in real-time
+                            updateStreamingMessage(botMessageId, botMessage.text);
+                        }
+                        if (chunk.error) {
+                            console.error('Stream error:', chunk.error);
+                            break;
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse stream chunk:', e);
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        hideTypingIndicator();
+        console.error('Streaming error, falling back to non-streaming:', err);
+        // Fallback to non-streaming if streaming fails
+        await handleNonStreamingResponse(payload);
+    }
+}
+
+// Handle non-streaming response as fallback
+async function handleNonStreamingResponse(payload) {
+    try {
+        const res = await fetch('/api/genai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
         if (!res.ok) {
             const err = await res.text();
@@ -192,15 +280,28 @@ async function sendMessage(text) {
 
         const botMessage = { id: Date.now().toString(), role: 'bot', text: botText, timestamp: new Date() };
         addMessageToChat(botMessage);
-
-        // Save messages history
-        messages.push(userMessage);
         messages.push(botMessage);
 
     } catch (err) {
-        hideTypingIndicator();
         addMessageToChat({ id: Date.now().toString(), role: 'bot', text: 'Error communicating with server.', timestamp: new Date() });
-        console.error('sendMessage error', err);
+        console.error('Non-streaming error', err);
+    }
+}
+
+// Update a streaming message in real-time
+function updateStreamingMessage(messageId, text) {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+
+    // Find the message div by searching through messages
+    const messageDivs = chatMessages.querySelectorAll('.message-bot');
+    for (const div of messageDivs) {
+        const textDiv = div.querySelector('.message-text');
+        if (textDiv && textDiv.textContent.length === 0 || textDiv.dataset.messageId === messageId) {
+            textDiv.textContent = text;
+            textDiv.dataset.messageId = messageId;
+            return;
+        }
     }
 }
 

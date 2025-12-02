@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { GoogleGenAI } from '@google/genai';
 
@@ -13,12 +13,18 @@ if (!apiKey) {
   console.warn('Warning: GENAI_API_KEY / GEMINI_API_KEY not set. Set it in your environment before using the API.');
 }
 
-const client = new GoogleGenAI({ apiKey });
+const client = new GoogleGenAI({ apiKey: apiKey || '' });
+
+interface GenAIRequest {
+  model?: string;
+  contents: any[];
+  config?: any;
+}
 
 // Non-streaming endpoint (simple response)
-app.post('/api/genai', async (req, res) => {
+app.post('/api/genai', async (req: Request, res: Response) => {
   try {
-    const { model = 'gemini-2.0-flash', contents, config } = req.body;
+    const { model = 'gemini-2.0-flash', contents, config }: GenAIRequest = req.body;
     if (!contents) return res.status(400).json({ error: 'Missing `contents` in body' });
 
     const stream = await client.models.generateContentStream({ model, contents, config: config || {} });
@@ -35,9 +41,9 @@ app.post('/api/genai', async (req, res) => {
 });
 
 // Streaming endpoint (progressive text chunks via Server-Sent Events)
-app.post('/api/genai/stream', async (req, res) => {
+app.post('/api/genai/stream', async (req: Request, res: Response) => {
   try {
-    const { model = 'gemini-2.0-flash', contents, config } = req.body;
+    const { model = 'gemini-2.0-flash', contents, config }: GenAIRequest = req.body;
     if (!contents) return res.status(400).json({ error: 'Missing `contents` in body' });
 
     res.setHeader('Content-Type', 'text/event-stream');
@@ -62,10 +68,16 @@ app.post('/api/genai/stream', async (req, res) => {
   }
 });
 
+// Health check endpoint
+app.get('/api/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok', apiKeyConfigured: !!apiKey });
+});
+
 app.listen(PORT, () => {
-  console.log(`GenAI server listening on http://localhost:${PORT}`);
-  console.log(`POST /api/genai - non-streaming responses`);
-  console.log(`POST /api/genai/stream - Server-Sent Events streaming`);
+  console.log(`✅ GenAI server listening on http://localhost:${PORT}`);
+  console.log(`📝 POST /api/genai - non-streaming responses`);
+  console.log(`🔄 POST /api/genai/stream - Server-Sent Events streaming`);
+  console.log(`❤️  GET /api/health - health check`);
 });
 
 // Security note: keep this server-side only; do not expose API keys to frontend.

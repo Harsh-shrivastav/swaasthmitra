@@ -108,3 +108,28 @@ Edit `config.js` to customize:
 ---
 
 **Disclaimer**: This AI consultation tool is for educational and informational purposes only. It does not replace professional medical advice, diagnosis, or treatment. Always consult qualified healthcare providers for medical concerns.
+
+## 🧠 Google GenAI (Optional) Integration
+
+You can use Google's GenAI client server-side to call newer models or streaming endpoints. Follow these steps:
+
+1. Install the official client in your server environment:
+
+```powershell
+cd path\to\project
+npm install @google/genai mime
+```
+
+2. Add environment variables: copy `.env.example` to `.env` and set `GENAI_API_KEY`.
+
+3. Use the helper in `server/genaiClient.ts` from a secure server process (do NOT import it into browser code):
+
+```ts
+import { generateContent } from './server/genaiClient';
+
+const contents = [{ parts: [{ text: 'Hello from Swaasthmitra' }] }];
+const output = await generateContent('gemini-2.0-flash', contents);
+console.log(output);
+```
+
+Security note: Never commit your `.env` file or expose API keys to frontend code. Keep all calls that use `GENAI_API_KEY` on the server.

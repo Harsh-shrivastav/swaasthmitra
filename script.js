@@ -133,37 +133,75 @@ function initializeChat() {
 }
 
 // Enhanced Send Message Function
-function sendMessage(text) {
+async function sendMessage(text) {
     if (!text.trim()) return;
-    
-    // Add user message
+
+    // Add user message locally
     const userMessage = {
         id: Date.now().toString(),
         role: 'user',
         text: text,
         timestamp: new Date()
     };
-    
+
     addMessageToChat(userMessage);
-    
+
     // Show typing indicator
     showTypingIndicator();
-    
-    // Simulate processing time based on message complexity
-    const processingTime = text.length > 50 ? 2000 : 1500;
-    
-    setTimeout(() => {
+
+    // If offline mode is enabled, use local response logic
+    if (isOfflineMode) {
+        // Simulate processing time
+        const processingTime = text.length > 50 ? 2000 : 1500;
+        setTimeout(() => {
+            hideTypingIndicator();
+            const botResponse = getBotResponse(text);
+            if (botResponse) addMessageToChat(botResponse);
+        }, processingTime);
+        return;
+    }
+
+    // Build prompt from recent messages (last 10) to send to server
+    try {
+        const history = [...messages, userMessage]
+            .slice(-10)
+            .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`)
+            .join('\n');
+
+        const payload = {
+            model: 'gemini-2.0-flash',
+            contents: [ { parts: [ { text: history } ] } ]
+        };
+
+        const res = await fetch('/api/genai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
         hideTypingIndicator();
-        const botResponse = getBotResponse(text);
-        addMessageToChat(botResponse);
-        
-        // Add follow-up questions if available
-        if (botResponse.followUpQuestions && botResponse.followUpQuestions.length > 0) {
-            setTimeout(() => {
-                showFollowUpButtons(botResponse.followUpQuestions);
-            }, 500);
+
+        if (!res.ok) {
+            const err = await res.text();
+            addMessageToChat({ id: Date.now().toString(), role: 'bot', text: 'Error: ' + err, timestamp: new Date() });
+            return;
         }
-    }, processingTime);
+
+        const data = await res.json();
+        const botText = data?.text || 'Sorry, I could not generate a response.';
+
+        const botMessage = { id: Date.now().toString(), role: 'bot', text: botText, timestamp: new Date() };
+        addMessageToChat(botMessage);
+
+        // Save messages history
+        messages.push(userMessage);
+        messages.push(botMessage);
+
+    } catch (err) {
+        hideTypingIndicator();
+        addMessageToChat({ id: Date.now().toString(), role: 'bot', text: 'Error communicating with server.', timestamp: new Date() });
+        console.error('sendMessage error', err);
+    }
 }
 
 // Show/Hide Typing Indicator
@@ -994,7 +1032,6 @@ function addMessageToChat(message) {
     
     chatMessages.appendChild(messageDiv);
     
-<<<<<<< HEAD
     // Scroll to bottom smoothly
     chatMessages.scrollTo({
         top: chatMessages.scrollHeight,

@@ -1,0 +1,40 @@
+import express from 'express';
+import cors from 'cors';
+import { GoogleGenAI } from '@google/genai';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const PORT = process.env.PORT || 3000;
+const apiKey = process.env.GENAI_API_KEY || process.env.GEMINI_API_KEY;
+
+if (!apiKey) {
+  console.warn('Warning: GENAI_API_KEY / GEMINI_API_KEY not set. Set it in your environment before using the API.');
+}
+
+const client = new GoogleGenAI({ apiKey });
+
+app.post('/api/genai', async (req, res) => {
+  try {
+    const { model = 'gemini-2.0-flash', contents, config } = req.body;
+    if (!contents) return res.status(400).json({ error: 'Missing `contents` in body' });
+
+    const stream = await client.models.generateContentStream({ model, contents, config: config || {} });
+    let out = '';
+    for await (const chunk of stream) {
+      if (chunk.text) out += chunk.text;
+    }
+
+    return res.json({ text: out });
+  } catch (err) {
+    console.error('GenAI error', err);
+    return res.status(500).json({ error: String(err) });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`GenAI server listening on http://localhost:${PORT}`);
+});
+
+// Security note: keep this server-side only; do not expose API keys to frontend.

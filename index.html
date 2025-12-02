@@ -12,7 +12,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-icon">SM</div>
+                    <div class="logo-icon"><img id="logo-icon" src="logo.png" alt=""></div>
                     <span class="logo-text">Swaasthmitra</span>
                 </div>
 
@@ -58,14 +58,8 @@
                 </p>
 
                 <div class="hero-buttons">
-                    <button class="btn-primary btn-large">Explore Demo</button>
+                    <a href="chat.html" class="btn-primary btn-large" style="text-decoration: none; display: inline-block;">Try Now</a>
                     <button class="btn-secondary btn-large">Learn More</button>
-                </div>
-
-                <div class="hero-image">
-                    <img src="/rural-healthcare-worker-with-tablet-india.jpg" 
-                         alt="Swaasthmitra app on mobile device" 
-                         class="hero-img">
                 </div>
             </div>
         </div>
@@ -137,7 +131,7 @@
                         <div class="phone-screen">
                             <!-- Status Bar -->
                             <div class="status-bar">
-                                <span>9:41</span>
+                                <span id="live-time"></span>
                                 <div class="status-icons">
                                     <svg class="status-icon" id="wifiIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
@@ -261,7 +255,7 @@
                 <div class="demo-sidebar">
                     <div class="card demo-controls">
                         <h3 class="card-title-small">Demo Controls</h3>
-                        <button class="btn-toggle" id="offlineToggle">Online Mode ON</button>
+                        <!-- offline toggle removed -->
 
                         <div class="scenarios">
                             <p class="scenarios-label">Try these scenarios:</p>
@@ -417,7 +411,7 @@
             <div class="footer-grid">
                 <div>
                     <div class="footer-logo">
-                        <div class="logo-icon">SM</div>
+                        <div class="logo-icon"><img id="logo-icon" src="logo.png" alt=""></div>
                         <span class="logo-text">Swaasthmitra</span>
                     </div>
                     <p class="footer-tagline">Offline-First AI Healthcare for Rural India</p>

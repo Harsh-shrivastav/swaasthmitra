@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Healthcare Workers - Swaasthmitra</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .caregivers-page {
+            min-height: 100vh;
+            background-color: var(--background);
+            padding: 6rem 1rem 2rem;
+        }
+
+        .page-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: #111827;
+        }
+
+        .filter-count {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .filter-right {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .filter-select {
+            padding: 0.5rem 0.75rem;
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #111827;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+
+        .caregivers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .caregiver-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .caregiver-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .caregiver-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .caregiver-left {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .caregiver-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+        }
+
+        .caregiver-info {
+            flex: 1;
+        }
+
+        .caregiver-name-row {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .caregiver-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--foreground);
+            line-height: 1.3;
+        }
+
+        .verified-icon {
+            width: 16px;
+            height: 16px;
+            color: #3b82f6;
+        }
+
+        .caregiver-role {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-top: 0.125rem;
+        }
+
+        .caregiver-experience {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            display: none;
+        }
+
+        .match-badge {
+            background: var(--emerald-100);
+            color: var(--primary-dark);
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .caregiver-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+
+        .location-icon {
+            width: 16px;
+            height: 16px;
+            color: #fbbf24;
+        }
+
+        .caregiver-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            padding: 0.375rem 0.875rem;
+            background: #eff6ff;
+            color: #1e40af;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pricing-section {
+            background: #f9fafb;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .price-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-bottom: 0.25rem;
+        }
+
+        .price-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .price-amount {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--foreground);
+        }
+
+        .caregiver-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .language-badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .language-badge {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            color: var(--muted-foreground);
+            text-transform: uppercase;
+            font-weight: 600;
+            background: white;
+        }
+
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .star-icon {
+            width: 16px;
+            height: 16px;
+            color: #fbbf24;
+            fill: #fbbf24;
+        }
+
+        .rating-score {
+            font-weight: 700;
+            color: var(--foreground);
+            font-size: 0.875rem;
+        }
+
+        .rating-count {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .back-link:hover {
+            background: var(--emerald-50);
+            border-color: var(--primary);
+        }
+
+        .caregiver-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn-view {
+            padding: 0.75rem 1rem;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-view:hover {
+            background: var(--emerald-50);
+            transform: translateY(-1px);
+        }
+
+        .btn-book {
+            padding: 0.75rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+        }
+
+        .btn-book:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
+        }
+
+        /* Booking Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--muted);
+            color: var(--foreground);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-caregiver {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--emerald-50);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-caregiver-info h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-caregiver-info p {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .modal-mode {
+            padding: 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-mode-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .modal-mode-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .modal-mode-option {
+            position: relative;
+        }
+
+        .modal-mode-radio {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .modal-mode-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 80px;
+        }
+
+        .modal-mode-radio:checked + .modal-mode-btn {
+            border-color: var(--primary);
+            background: var(--emerald-50);
+        }
+
+        .modal-mode-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .modal-mode-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-mode-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--foreground);
+            text-align: center;
+        }
+
+        .modal-mode-price {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .modal-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-form-label span {
+            color: #ef4444;
+        }
+
+        .modal-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .modal-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-payment {
+            background: #f0f9ff;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-payment-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-payment-label {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .modal-payment-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .modal-payment-note {
+            font-size: 0.7rem;
+            color: var(--muted-foreground);
+            margin-top: 0.5rem;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .modal-btn-cancel {
+            padding: 0.875rem;
+            background: white;
+            color: var(--foreground);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn-cancel:hover {
+            background: var(--muted);
+        }
+
+        .modal-btn-book {
+            padding: 0.875rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn-book:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .nav-logo:hover {
+            opacity: 0.8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--muted-foreground);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-button {
+            padding: 0.5rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1024px) {
+            .caregivers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .caregivers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-right {
+                justify-content: space-between;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .caregiver-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <span>🏥</span>
+                <span>Swaasthmitra</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="appointment.html" class="nav-link">Book Appointment</a>
+                <a href="#" class="nav-link">About</a>
+                <button class="nav-button">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="caregivers-page">
+        <div class="page-container">
+            <a href="index.html" class="back-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Home
+            </a>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Find Healthcare Workers</h1>
+                <p class="page-subtitle">Connect with verified healthcare professionals in your area</p>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-left">
+                    <span class="filter-label">Filter:</span>
+                    <span class="filter-count"><span id="caregiverCount">10</span> Caregivers</span>
+                </div>
+                <div class="filter-right">
+                    <select class="filter-select">
+                        <option>Min Rating: All</option>
+                        <option>4.0+</option>
+                        <option>4.5+</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Sort by: Best Match</option>
+                        <option>Price: Low to High</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Caregivers Grid -->
+            <div class="caregivers-grid" id="caregiversGrid">
+                <!-- Cards will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const caregivers = [
+            {
+                name: "Manju Nair",
+                role: "ASHA Worker",
+                experience: "8 years experience",
+                avatar: "M",
+                match: "95% Match",
+                online: true,
+                verified: true,
+                specialties: ["Pregnancy Care", "Postnatal Care"],
+                description: "Experienced ASHA worker specializing in maternal and child health",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹500",
+                    homeVisit: "₹400"
+                },
+                languages: ["HI", "EN"],
+                rating: 4.5,
+                reviews: 57
+            },
+            {
+                name: "Priya Kumar",
+                role: "Community Nurse",
+                experience: "6 years experience",
+                avatar: "P",
+                match: "95% Match",
+                online: true,
+                verified: true,
+                specialties: ["Pregnancy Care", "Postnatal Care"],
+                description: "Dedicated community nurse with focus on women's health",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹500",
+                    homeVisit: "₹400"
+                },
+                languages: ["HI", "EN"],
+                rating: 4.5,
+                reviews: 10
+            },
+            {
+                name: "Reena Sharma",
+                role: "ASHA Worker",
+                experience: "6 years experience",
+                avatar: "R",
+                match: "95% Match",
+                online: true,
+                verified: true,
+                specialties: ["Pregnancy Care", "Postnatal Care"],
+                description: "Compassionate healthcare worker serving rural communities",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹500",
+                    homeVisit: "₹400"
+                },
+                languages: ["HI", "EN"],
+                rating: 4.5,
+                reviews: 31
+            },
+            {
+                name: "Anita Devi",
+                role: "Health Worker",
+                experience: "10 years experience",
+                avatar: "A",
+                match: "92% Match",
+                online: false,
+                verified: true,
+                specialties: ["Child Healthcare", "Vaccination"],
+                description: "Experienced in pediatric care and immunization programs",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹450",
+                    homeVisit: "₹350"
+                },
+                languages: ["HI", "EN"],
+                rating: 4.8,
+                reviews: 89
+            },
+            {
+                name: "Sunita Rao",
+                role: "Midwife",
+                experience: "12 years experience",
+                avatar: "S",
+                match: "90% Match",
+                online: true,
+                verified: true,
+                specialties: ["Pregnancy Care", "Delivery Support"],
+                description: "Skilled midwife with expertise in safe delivery practices",
+                services: ["Home Visit", "Emergency Support"],
+                fees: {
+                    consultation: "₹600",
+                    homeVisit: "₹500"
+                },
+                languages: ["HI", "EN", "TA"],
+                rating: 4.9,
+                reviews: 124
+            },
+            {
+                name: "Kavita Patil",
+                role: "ASHA Worker",
+                experience: "5 years experience",
+                avatar: "K",
+                match: "88% Match",
+                online: true,
+                verified: true,
+                specialties: ["Family Planning", "Health Education"],
+                description: "Community health educator and family planning counselor",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹400",
+                    homeVisit: "₹300"
+                },
+                languages: ["HI", "MR"],
+                rating: 4.3,
+                reviews: 42
+            },
+            {
+                name: "Lakshmi Reddy",
+                role: "Community Nurse",
+                experience: "7 years experience",
+                avatar: "L",
+                match: "87% Match",
+                online: true,
+                verified: true,
+                specialties: ["Chronic Disease Care", "Elderly Care"],
+                description: "Specialized in managing chronic conditions in rural settings",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹550",
+                    homeVisit: "₹450"
+                },
+                languages: ["HI", "TE", "EN"],
+                rating: 4.6,
+                reviews: 67
+            },
+            {
+                name: "Meera Joshi",
+                role: "Health Worker",
+                experience: "4 years experience",
+                avatar: "M",
+                match: "85% Match",
+                online: false,
+                verified: true,
+                specialties: ["Nutrition", "Child Development"],
+                description: "Focuses on child nutrition and development programs",
+                services: ["Home Visit", "Community Sessions"],
+                fees: {
+                    consultation: "₹350",
+                    homeVisit: "₹300"
+                },
+                languages: ["HI", "EN"],
+                rating: 4.4,
+                reviews: 28
+            },
+            {
+                name: "Radha Krishna",
+                role: "Auxiliary Nurse Midwife",
+                experience: "9 years experience",
+                avatar: "R",
+                match: "84% Match",
+                online: true,
+                verified: true,
+                specialties: ["Pregnancy Care", "Infant Care"],
+                description: "ANM with extensive experience in maternal and child health",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹500",
+                    homeVisit: "₹450"
+                },
+                languages: ["HI", "KN", "EN"],
+                rating: 4.7,
+                reviews: 95
+            },
+            {
+                name: "Geeta Singh",
+                role: "ASHA Worker",
+                experience: "6 years experience",
+                avatar: "G",
+                match: "82% Match",
+                online: true,
+                verified: true,
+                specialties: ["Vaccination", "Health Awareness"],
+                description: "Active in immunization drives and health awareness campaigns",
+                services: ["Online Video Call", "Home Visit"],
+                fees: {
+                    consultation: "₹400",
+                    homeVisit: "₹350"
+                },
+                languages: ["HI", "EN"],
+                rating: 4.2,
+                reviews: 35
+            }
+        ];
+
+        function renderCaregivers() {
+            const grid = document.getElementById('caregiversGrid');
+            grid.innerHTML = caregivers.map(caregiver => `
+                <div class="caregiver-card">
+                    <div class="caregiver-header">
+                        <div class="caregiver-avatar">${caregiver.avatar}</div>
+                        <div class="caregiver-info">
+                            <h3 class="caregiver-name">${caregiver.name}</h3>
+                            <p class="caregiver-role">${caregiver.role}</p>
+                            <p class="caregiver-experience">${caregiver.experience}</p>
+                        </div>
+                        <div class="match-badge">${caregiver.match}</div>
+                    </div>
+
+                    <div class="caregiver-status">
+                        <div class="status-item status-online">
+                            <svg class="status-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                            <span>${caregiver.online ? 'Available online' : 'Offline'}</span>
+                        </div>
+                        ${caregiver.verified ? `
+                            <div class="status-item status-verified">
+                                <svg class="status-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Verified</span>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="caregiver-specialties">
+                        ${caregiver.specialties.map(s => `<span class="specialty-tag">${s}</span>`).join('')}
+                    </div>
+
+                    <p class="caregiver-description">${caregiver.description}</p>
+
+                    <div class="caregiver-fees">
+                        <div class="fees-header">
+                            <span>Fees</span>
+                        </div>
+                        <div class="fees-list">
+                            <div class="fee-item">
+                                <span class="fee-label">Consultation: </span>
+                                <span class="fee-amount">${caregiver.fees.consultation}</span>
+                            </div>
+                            <div class="fee-item">
+                                <span class="fee-label">Home visit: </span>
+                                <span class="fee-amount">${caregiver.fees.homeVisit}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="caregiver-rating">
+                        <span class="rating-stars">⭐⭐⭐⭐${caregiver.rating >= 4.5 ? '⭐' : '☆'}</span>
+                        <span class="rating-score">${caregiver.rating}</span>
+                        <span class="rating-count">(${caregiver.reviews} reviews)</span>
+                    </div>
+
+                    <div class="caregiver-actions">
+                        <button class="btn-view" onclick="viewProfile('${caregiver.name}')">View Profile</button>
+                        <button class="btn-book" onclick="bookAppointment('${caregiver.name}')">Book Now</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewProfile(name) {
+            alert(`Viewing profile for ${name}`);
+            // TODO: Navigate to detailed profile page
+        }
+
+        let currentCaregiver = null;
+
+        function bookAppointment(name) {
+            const caregiver = caregivers.find(c => c.name === name);
+            if (!caregiver) return;
+
+            currentCaregiver = caregiver;
+
+            // Show modal
+            const modal = document.getElementById('bookingModal');
+            modal.classList.add('active');
+
+            // Fill caregiver details
+            document.getElementById('modalCaregiverName').textContent = caregiver.name;
+            document.getElementById('modalCaregiverRole').textContent = caregiver.role;
+            document.getElementById('modalCaregiverAvatar').textContent = caregiver.avatar;
+            
+            // Set prices
+            document.getElementById('onlinePrice').textContent = caregiver.fees.consultation;
+            document.getElementById('homePrice').textContent = caregiver.fees.homeVisit;
+            
+            // Reset to online consultation and update fee
+            document.getElementById('modeOnline').checked = true;
+            document.getElementById('modalConsultationFee').textContent = caregiver.fees.consultation;
+        }
+
+        function updateConsultationFee() {
+            if (!currentCaregiver) return;
+            
+            const mode = document.querySelector('input[name="consultationMode"]:checked').value;
+            const feeElement = document.getElementById('modalConsultationFee');
+            
+            if (mode === 'online') {
+                feeElement.textContent = currentCaregiver.fees.consultation;
+            } else {
+                feeElement.textContent = currentCaregiver.fees.homeVisit;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').classList.remove('active');
+            document.getElementById('symptomsInput').value = '';
+            currentCaregiver = null;
+        }
+
+        function confirmBooking() {
+            const symptoms = document.getElementById('symptomsInput').value.trim();
+            
+            if (!symptoms) {
+                alert('Please describe your symptoms');
+                return;
+            }
+
+            const caregiverName = document.getElementById('modalCaregiverName').textContent;
+            const mode = document.querySelector('input[name="consultationMode"]:checked').value;
+            const fee = document.getElementById('modalConsultationFee').textContent;
+            const modeText = mode === 'online' ? 'Online Consultation' : 'Home Visit';
+            
+            alert(`Booking confirmed with ${caregiverName}!\n\nMode: ${modeText}\nFee: ${fee}\nSymptoms: ${symptoms}\n\nYou will receive a confirmation shortly.`);
+            closeModal();
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('bookingModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        renderCaregivers();
+    </script>
+
+    <!-- Booking Modal -->
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <h2 class="modal-title">Book Appointment</h2>
+
+            <!-- Caregiver Info -->
+            <div class="modal-caregiver">
+                <div class="modal-avatar" id="modalCaregiverAvatar">M</div>
+                <div class="modal-caregiver-info">
+                    <h3 id="modalCaregiverName">Manju Nair</h3>
+                    <p id="modalCaregiverRole">ASHA Worker</p>
+                </div>
+            </div>
+
+            <!-- Consultation Mode -->
+            <div class="modal-mode">
+                <label class="modal-mode-label">SELECT MODE</label>
+                <div class="modal-mode-options">
+                    <div class="modal-mode-option">
+                        <input 
+                            type="radio" 
+                            id="modeOnline" 
+                            name="consultationMode" 
+                            value="online" 
+                            class="modal-mode-radio"
+                            checked
+                            onchange="updateConsultationFee()"
+                        >
+                        <label for="modeOnline" class="modal-mode-btn">
+                            <div class="modal-mode-icon">💻</div>
+                            <div class="modal-mode-text">Online Consultation</div>
+                            <div class="modal-mode-price" id="onlinePrice">₹500</div>
+                        </label>
+                    </div>
+                    <div class="modal-mode-option">
+                        <input 
+                            type="radio" 
+                            id="modeHome" 
+                            name="consultationMode" 
+                            value="home" 
+                            class="modal-mode-radio"
+                            onchange="updateConsultationFee()"
+                        >
+                        <label for="modeHome" class="modal-mode-btn">
+                            <div class="modal-mode-icon">🏠</div>
+                            <div class="modal-mode-text">Home Visit</div>
+                            <div class="modal-mode-price" id="homePrice">₹400</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptoms Form -->
+            <div class="modal-form-group">
+                <label class="modal-form-label">
+                    Describe your symptoms <span>*</span>
+                </label>
+                <textarea 
+                    class="modal-textarea" 
+                    id="symptomsInput"
+                    placeholder="Please describe your symptoms in detail..."
+                    required
+                ></textarea>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="modal-payment">
+                <div class="modal-payment-title">Payment Details</div>
+                <div class="modal-payment-row">
+                    <span class="modal-payment-label">Consultation Fee</span>
+                    <span class="modal-payment-amount" id="modalConsultationFee">₹500</span>
+                </div>
+                <p class="modal-payment-note">Pay after consultation</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="modal-actions">
+                <button class="modal-btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn-book" onclick="confirmBooking()">Pay & Book</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

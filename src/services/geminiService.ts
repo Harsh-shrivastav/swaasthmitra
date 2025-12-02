@@ -1,112 +1,149 @@
-import axios from 'axios';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-
-interface GeminiRequest {
-  contents: Array<{
-    parts: Array<{
-      text: string;
-    }>;
-  }>;
-  generationConfig?: {
-    temperature?: number;
-    topK?: number;
-    topP?: number;
-    maxOutputTokens?: number;
-  };
-}
 
 export class GeminiService {
   private apiKey: string;
+  private genAI: GoogleGenerativeAI;
+  private chatSession: any = null;
 
   constructor() {
     this.apiKey = GEMINI_API_KEY || '';
     if (!this.apiKey) {
       console.warn('Gemini API key not configured');
     }
+    this.genAI = new GoogleGenerativeAI(this.apiKey);
   }
 
-  async generateContent(prompt: string, config?: GeminiRequest['generationConfig']): Promise<string> {
-    if (!this.apiKey) {
-      throw new Error('Gemini API key not configured');
+  initChat() {
+    const model = this.genAI.getGenerativeModel({
+      model: "gemini-2.5-pro",
+    });
+
+    this.chatSession = model.startChat({
+      history: [
+        {
+          role: "user",
+          parts: [{ text: `You are Dr. Swaasthmitra, a professional medical AI assistant. 
+
+CRITICAL RULES:
+1. ALWAYS respond in clear, professional medical English
+2. FORMAT YOUR RESPONSES using markdown:
+   - Use **bold** for KEY POINTS and important information
+   - Use bullet points (•) for lists
+   - Use proper paragraphs for readability
+   - Keep responses CONCISE - match length to question complexity
+   - For simple questions: 2-3 sentences
+   - For complex symptoms: Structured but brief response
+
+3. DETECT EMERGENCIES: If patient mentions chest pain, difficulty breathing, severe bleeding, stroke symptoms, unconsciousness:
+   **🚨 MEDICAL EMERGENCY DETECTED**
+   Call 108 immediately
+
+4. STRUCTURE YOUR RESPONSES:
+   **Assessment:** Brief analysis
+   **Recommendations:** Bullet points
+   **Warning Signs:** When to see a doctor
+   **Disclaimer:** Brief reminder
+
+5. NEVER PRESCRIBE: Do not recommend specific medicines or dosages
+6. NEVER DIAGNOSE: Use "This could indicate...", "Symptoms suggest..."
+7. Be empathetic, professional, and BRIEF
+
+Ready to assist patients professionally?` }],
+        },
+        {
+          role: "model",
+          parts: [{ text: `Good day. I am **Dr. Swaasthmitra**, an AI medical assistant.
+
+I provide professional medical guidance while emphasizing that I am an AI system, not a replacement for licensed physicians.
+
+**For emergencies, call 108 immediately.**
+
+How may I assist you today? Please describe your symptoms.` }],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 2048,
+      },
+    });
+
+    return this.chatSession;
+  }
+
+  async generateSummary(conversationHistory: string): Promise<string> {
+    if (!this.chatSession) {
+      throw new Error('No active chat session');
     }
 
     try {
-      const response = await axios.post(
-        `${GEMINI_API_URL}?key=${this.apiKey}`,
-        {
-          contents: [{
-            parts: [{ text: prompt }]
-          }],
-          generationConfig: config || {
-            temperature: 0.3,
-            topK: 40,
-            topP: 0.8,
-            maxOutputTokens: 2048,
-          }
-        } as GeminiRequest
-      );
+      const summaryPrompt = `Please provide a concise SOAP note summary of this consultation:
 
-      if (response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-        return response.data.candidates[0].content.parts[0].text;
-      }
+${conversationHistory}
 
-      throw new Error('Invalid API response format');
+Format as:
+**SUBJECTIVE:**
+• Patient's main complaints
+• Relevant history
+
+**OBJECTIVE:**
+• Key findings from conversation
+
+**ASSESSMENT:**
+• Possible conditions (non-definitive)
+• Risk level: Low/Medium/High
+
+**PLAN:**
+• Recommended actions
+• When to seek medical care
+• Follow-up advice
+
+Keep it professional and brief.`;
+
+      const result = await this.chatSession.sendMessage(summaryPrompt);
+      return result.response.text();
     } catch (error) {
-      console.error('Gemini API Error:', error);
+      console.error('Summary generation error:', error);
       throw error;
     }
   }
 
-  async generateMedicalQuestion(context: string, patientData: any): Promise<string> {
-    const prompt = `
-You are Dr. Swaasthya, an experienced physician conducting a medical consultation.
-Current stage: History of Present Illness & Review of Systems.
+  async sendMessage(message: string): Promise<string> {
+    if (!this.chatSession) {
+      this.initChat();
+    }
 
-Patient Demographics: Age ${patientData.demographics.age}, Gender ${patientData.demographics.gender}
-Chief Complaint: ${patientData.chiefComplaint}
+    if (!this.apiKey) {
+      throw new Error('Gemini API key not configured. Please check your .env file.');
+    }
 
-Conversation History:
-${context}
-
-Your task: Generate the NEXT SINGLE most important medical question to ask the patient.
-- Use the SOCRATES method (Site, Onset, Character, Radiation, Associations, Time course, Exacerbating/relieving factors, Severity)
-- Be conversational but professional
-- Ask ONE clear question at a time
-- If you have enough information, output "ENOUGH_INFO"
-
-Format: Just the question text, or "ENOUGH_INFO".
-    `;
-
-    return this.generateContent(prompt, { temperature: 0.3, maxOutputTokens: 200 });
+    try {
+      const result = await this.chatSession.sendMessage(message);
+      const text = result.response.text();
+      
+      if (!text) {
+        throw new Error('Empty response from Gemini API');
+      }
+      
+      return text;
+    } catch (error: any) {
+      console.error('Gemini API Error:', error);
+      
+      if (error.message?.includes('API key')) {
+        throw new Error('Invalid API key. Please check your VITE_GEMINI_API_KEY in .env file.');
+      }
+      
+      if (error.message?.includes('quota')) {
+        throw new Error('API quota exceeded. Please try again later or check your Google Cloud quota.');
+      }
+      
+      throw new Error(`Gemini API Error: ${error.message || 'Unknown error'}`);
+    }
   }
 
-  async generateSOAPNote(patientSummary: string): Promise<string> {
-    const prompt = `
-You are an experienced physician providing a medical consultation.
-Based on the following patient information, provide a comprehensive SOAP note assessment:
-
-${patientSummary}
-
-IMPORTANT: This is a telemedicine consultation. No physical examination was performed.
-
-Provide the assessment in SOAP note format with:
-1. SUBJECTIVE - Patient's reported symptoms and history
-2. OBJECTIVE - Analysis of provided information
-3. ASSESSMENT - Differential diagnosis with top 3 likely conditions
-4. PLAN - Recommendations for care, follow-up, and when to seek immediate attention
-
-Include:
-- Risk stratification (Low/Medium/High/Critical)
-- Red flags if any
-- Specific recommendations
-- When to seek emergency care
-
-Format in clear, professional medical language accessible to patients.
-    `;
-
-    return this.generateContent(prompt);
+  resetChat() {
+    this.chatSession = null;
   }
 }
 

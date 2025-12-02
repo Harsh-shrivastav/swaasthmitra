@@ -86,8 +86,8 @@ body {
 }
 
 .logo-icon {
-    width: 2rem;
-    height: 2rem;
+    width: 3rem;
+    height: 3rem;
     background: linear-gradient(135deg, var(--emerald-600), var(--secondary));
     border-radius: var(--radius-lg);
     display: flex;
@@ -96,6 +96,10 @@ body {
     color: white;
     font-weight: bold;
     font-size: 0.875rem;
+}
+#logo-icon{
+    width: 3rem;
+    height: 3rem;
 }
 
 .logo-text {

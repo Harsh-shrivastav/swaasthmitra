@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swaasthmitra - Offline-First AI Healthcare for Rural India</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon"><img id="logo-icon" src="logo.png" alt=""></div>
+                    <span class="logo-text">Swaasthmitra</span>
+                </div>
+
+                <nav class="nav-desktop" id="navDesktop">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#tech" class="nav-link">Technology</a>
+                    <a href="#impact" class="nav-link">Impact</a>
+                    <button class="btn-primary">Get Started</button>
+                </nav>
+
+                <button class="menu-button" id="menuButton" aria-label="Menu">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="nav-mobile" id="navMobile">
+                <a href="#features" class="nav-link-mobile">Features</a>
+                <a href="#tech" class="nav-link-mobile">Technology</a>
+                <a href="#impact" class="nav-link-mobile">Impact</a>
+                <button class="btn-primary btn-full">Get Started</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg-accent"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>Healthcare that never sleeps</span>
+                </div>
+
+                <h1 class="hero-title">Offline-First AI Healthcare for Rural India</h1>
+
+                <p class="hero-description">
+                    Swaasthmitra bridges the healthcare gap in underserved rural regions. Get instant medical advice, 
+                    emergency alerts, and resource mapping—even without internet.
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="btn-primary btn-large">Try Now</button>
+                    <button class="btn-secondary btn-large">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Solution Section -->
+    <section class="section-light" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">The Challenge & Our Solution</h2>
+                <p class="section-description">
+                    Rural healthcare systems face critical gaps when frontline workers are unavailable. 
+                    Swaasthmitra fills that gap 24/7.
+                </p>
+            </div>
+
+            <div class="grid-2">
+                <!-- Problem -->
+                <div class="card card-problem">
+                    <div class="icon-box icon-red">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">The Problem</h3>
+                    <ul class="feature-list">
+                        <li><span class="bullet bullet-red">•</span>No continuity when ASHA workers are unavailable</li>
+                        <li><span class="bullet bullet-red">•</span>Unreliable internet connectivity in rural areas</li>
+                        <li><span class="bullet bullet-red">•</span>Patients panic during emergencies without immediate guidance</li>
+                        <li><span class="bullet bullet-red">•</span>No access to maternal care or preventive health checks</li>
+                        <li><span class="bullet bullet-red">•</span>Missed vaccinations and critical health records</li>
+                    </ul>
+                </div>
+
+                <!-- Solution -->
+                <div class="card card-solution">
+                    <div class="icon-box icon-green">
+                        <div class="icon-check">✓</div>
+                    </div>
+                    <h3 class="card-title">Swaasthmitra's Solution</h3>
+                    <ul class="feature-list">
+                        <li><span class="bullet bullet-green">✓</span>24/7 AI medical companion that works offline</li>
+                        <li><span class="bullet bullet-green">✓</span>Voice-first interface in Hindi & English for accessibility</li>
+                        <li><span class="bullet bullet-green">✓</span>Instant Red Alert system for critical emergencies</li>
+                        <li><span class="bullet bullet-green">✓</span>Offline resource mapping to nearby health centers</li>
+                        <li><span class="bullet bullet-green">✓</span>Async appointment scheduler with auto-sync capabilities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Demo Section -->
+    <section class="section-demo">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Experience Swaasthmitra in Action</h2>
+                <p class="section-description">
+                    Interact with the app demo. Try different scenarios: simple advice, emergency alerts, and offline scheduling.
+                </p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Phone Mockup -->
+                <div class="phone-container">
+                    <div class="phone-bezel">
+                        <div class="phone-screen">
+                            <!-- Status Bar -->
+                            <div class="status-bar">
+                                <span id="live-time"></span>
+                                <div class="status-icons">
+                                    <svg class="status-icon" id="wifiIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- App Content -->
+                            <div class="app-content">
+                                <!-- Tab Navigation -->
+                                <div class="tab-nav">
+                                    <button class="tab-button active" data-tab="chat">Chat</button>
+                                    <button class="tab-button" data-tab="map">Map</button>
+                                    <button class="tab-button" data-tab="schedule">Schedule</button>
+                                </div>
+
+                                <!-- Chat Tab -->
+                                <div class="tab-content active" id="chatTab">
+                                    <div class="chat-messages" id="chatMessages">
+                                        <div class="message message-bot">
+                                            <div class="message-bubble">
+                                                Namaste! I am your Swaasthya Sahayak. How can I help you today?
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Language Toggle -->
+                                    <div class="language-toggle">
+                                        <button class="lang-button active" data-lang="en">English</button>
+                                        <button class="lang-button" data-lang="hi">हिन्दी</button>
+                                    </div>
+
+                                    <!-- Input Area -->
+                                    <div class="chat-input-area">
+                                        <input type="text" id="chatInput" class="chat-input" placeholder="Describe symptoms...">
+                                        <button class="icon-button" id="micButton">
+                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                                            </svg>
+                                        </button>
+                                        <button class="icon-button btn-send" id="sendButton">
+                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Map Tab -->
+                                <div class="tab-content" id="mapTab">
+                                    <div class="map-view">
+                                        <div class="map-placeholder">
+                                            <svg class="map-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                            </svg>
+                                            <p class="map-location">Pipariya, Madhya Pradesh</p>
+                                            <p class="map-info">3 Health Centers Nearby</p>
+                                        </div>
+                                    </div>
+                                    <div class="location-list">
+                                        <div class="location-item">
+                                            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                            </svg>
+                                            <span>Primary Health Centre - 2.5 km</span>
+                                        </div>
+                                        <div class="location-item">
+                                            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                            </svg>
+                                            <span>Pharmacy - 1.2 km</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Schedule Tab -->
+                                <div class="tab-content" id="scheduleTab">
+                                    <div class="schedule-form">
+                                        <div class="form-group">
+                                            <label class="form-label">Patient Name</label>
+                                            <input type="text" id="patientName" class="form-input" placeholder="Enter name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Vaccine Type</label>
+                                            <select id="vaccineType" class="form-input">
+                                                <option value="">Select vaccine</option>
+                                                <option value="Polio">Polio</option>
+                                                <option value="MMR">MMR</option>
+                                                <option value="DPT">DPT</option>
+                                                <option value="Tetanus">Tetanus</option>
+                                            </select>
+                                        </div>
+                                        <button class="btn-primary btn-full" id="scheduleButton">Schedule Appointment</button>
+                                        <div class="offline-notice" id="offlineNotice">
+                                            <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                                <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                                <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                            </svg>
+                                            <span class="notice-text">Online: Data synced in real-time</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls & Info -->
+                <div class="demo-sidebar">
+                    <div class="card demo-controls">
+                        <h3 class="card-title-small">Demo Controls</h3>
+                        <!-- offline toggle removed -->
+
+                        <div class="scenarios">
+                            <p class="scenarios-label">Try these scenarios:</p>
+                            <button class="scenario-btn" data-message="I have fever">💊 Try "I have fever"</button>
+                            <button class="scenario-btn" data-message="chest pain">⚠️ Try "chest pain"</button>
+                            <button class="scenario-btn" data-message="pregnancy checkup">👶 Try "pregnancy checkup"</button>
+                        </div>
+                    </div>
+
+                    <div class="card features-card">
+                        <h3 class="card-title-small">Key Features</h3>
+                        <ul class="features-list-small">
+                            <li><span class="bullet-small">✓</span>Bilingual (Hindi/English)</li>
+                            <li><span class="bullet-small">✓</span>Symptom triage system</li>
+                            <li><span class="bullet-small">✓</span>Emergency detection</li>
+                            <li><span class="bullet-small">✓</span>Works offline</li>
+                            <li><span class="bullet-small">✓</span>Auto-sync appointments</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Deep Dive Section -->
+    <section class="section-light" id="tech">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Technical Architecture</h2>
+                <p class="section-description">
+                    Built for resilience, reliability, and real-world rural healthcare challenges.
+                </p>
+            </div>
+
+            <div class="grid-3">
+                <div class="card tech-card">
+                    <div class="tech-icon">📱</div>
+                    <h3 class="tech-title">Offline-First Architecture</h3>
+                    <p class="tech-description">
+                        All core logic runs locally on the device. AI decision trees process symptoms without cloud dependency.
+                    </p>
+                </div>
+
+                <div class="card tech-card">
+                    <div class="tech-icon">🤖</div>
+                    <h3 class="tech-title">Edge AI Model</h3>
+                    <p class="tech-description">
+                        Lightweight ML model optimized for rural connectivity. Triage logic is deterministic and rule-based for safety.
+                    </p>
+                </div>
+
+                <div class="card tech-card">
+                    <div class="tech-icon">🎙️</div>
+                    <h3 class="tech-title">Voice Processing</h3>
+                    <p class="tech-description">
+                        Convert speech-to-text and text-to-speech in Hindi/English. Works offline using on-device processing.
+                    </p>
+                </div>
+
+                <div class="card tech-card">
+                    <div class="tech-icon">🔄</div>
+                    <h3 class="tech-title">Async Data Sync</h3>
+                    <p class="tech-description">
+                        Appointments, records, and health data are queued offline and automatically sync with Supabase when connectivity returns.
+                    </p>
+                </div>
+
+                <div class="card tech-card">
+                    <div class="tech-icon">🔒</div>
+                    <h3 class="tech-title">Conflict Resolution</h3>
+                    <p class="tech-description">
+                        Handles multiple users sharing one device. Smart caching prevents duplicate entries and data corruption.
+                    </p>
+                </div>
+
+                <div class="card tech-card">
+                    <div class="tech-icon">🚨</div>
+                    <h3 class="tech-title">Emergency Protocol</h3>
+                    <p class="tech-description">
+                        Red Alert system instantly detects critical symptoms and provides immediate action paths with geo-located resources.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <h3 class="tech-stack-title">Technology Stack</h3>
+                <div class="grid-2">
+                    <div>
+                        <h4 class="tech-stack-subtitle">Frontend</h4>
+                        <ul class="tech-stack-list">
+                            <li>• React Native for cross-platform mobile</li>
+                            <li>• IndexedDB for offline data storage</li>
+                            <li>• WebRTC for voice processing</li>
+                            <li>• Service Workers for background sync</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="tech-stack-subtitle">Backend & Infrastructure</h4>
+                        <ul class="tech-stack-list">
+                            <li>• Supabase for secure data storage & RLS</li>
+                            <li>• Edge Functions for real-time sync</li>
+                            <li>• PostgreSQL for conflict-free records</li>
+                            <li>• Vercel deployment for global CDN</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section class="section-gradient" id="impact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Global Impact</h2>
+                <p class="section-description">
+                    Transforming healthcare access in underserved regions, one village at a time.
+                </p>
+            </div>
+
+            <div class="grid-4">
+                <div class="stat-card">
+                    <div class="stat-number">500M+</div>
+                    <p class="stat-label">Rural Population Reached</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <p class="stat-label">Healthcare Continuity</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">60%</div>
+                    <p class="stat-label">Reduction in Wait Times</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <p class="stat-label">Internet Required</p>
+                </div>
+            </div>
+
+            <div class="cta-card">
+                <h3 class="cta-title">Join the Healthcare Revolution</h3>
+                <p class="cta-description">
+                    Swaasthmitra is empowering rural communities with accessible, offline-first healthcare. Be part of this mission.
+                </p>
+                <button class="btn-cta">Get Started Today</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <div class="logo-icon"><img id="logo-icon" src="logo.png" alt=""></div>
+                        <span class="logo-text">Swaasthmitra</span>
+                    </div>
+                    <p class="footer-tagline">Offline-First AI Healthcare for Rural India</p>
+                </div>
+                <div>
+                    <h4 class="footer-title">Product</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">Features</a></li>
+                        <li><a href="#" class="footer-link">Pricing</a></li>
+                        <li><a href="#" class="footer-link">Documentation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Company</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">About</a></li>
+                        <li><a href="#" class="footer-link">Blog</a></li>
+                        <li><a href="#" class="footer-link">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">Privacy</a></li>
+                        <li><a href="#" class="footer-link">Terms</a></li>
+                        <li><a href="#" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Swaasthmitra. Making healthcare accessible for all.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

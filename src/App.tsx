@@ -8,6 +8,7 @@ import MapPage from './pages/MapPage';
 import DoctorsPage from './pages/DoctorsPage';
 import EmergencyPage from './pages/EmergencyPage';
 import RecordsPage from './pages/RecordsPage';
+import VideoConsultPage from './pages/VideoConsultPage';
 import Header from './components/Header';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/doctors" element={<DoctorsPage />} />
           <Route path="/emergency" element={<EmergencyPage />} />
           <Route path="/records" element={<RecordsPage />} />
+          <Route path="/video-consult" element={<VideoConsultPage />} />
         </Routes>
       </div>
     </ConsultationProvider>

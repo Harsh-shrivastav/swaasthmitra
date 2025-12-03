@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaStethoscope, FaCalendarAlt, FaMapMarkedAlt, FaUserMd, FaAmbulance, FaHeartbeat } from 'react-icons/fa';
+import { FaStethoscope, FaCalendarAlt, FaMapMarkedAlt, FaUserMd, FaAmbulance, FaHeartbeat, FaVideo } from 'react-icons/fa';
 
 const HomePage = () => {
   const features = [
@@ -50,6 +50,14 @@ const HomePage = () => {
       icon: <FaHeartbeat className="text-5xl" />,
       color: 'from-teal-500 to-green-600',
       link: '/records',
+    },
+    {
+      id: 'video-consult',
+      title: 'Video Consultation',
+      description: 'Face-to-face virtual consultation with doctors via HD video call.',
+      icon: <FaVideo className="text-5xl" />,
+      color: 'from-indigo-500 to-blue-600',
+      link: '/video-consult',
     },
   ];
 

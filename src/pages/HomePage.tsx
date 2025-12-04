@@ -1,60 +1,62 @@
 import { Link } from 'react-router-dom';
 import { FaStethoscope, FaCalendarAlt, FaMapMarkedAlt, FaUserMd, FaAmbulance, FaHeartbeat, FaVideo } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 
 const HomePage = () => {
+  const { t } = useLanguage();
   const features = [
     {
       id: 'consultation',
-      title: 'AI Medical Consultation',
-      description: 'Get instant medical consultation powered by AI. Available 24/7, even offline.',
+      title: t('home.consultation'),
+      description: t('home.consultation.desc'),
       icon: <FaStethoscope className="text-5xl" />,
       color: 'from-green-500 to-emerald-600',
       link: '/consultation',
     },
     {
       id: 'schedule',
-      title: 'Schedule Appointment',
-      description: 'Book appointments with doctors and healthcare providers in your area.',
+      title: t('home.schedule'),
+      description: t('home.schedule.desc'),
       icon: <FaCalendarAlt className="text-5xl" />,
       color: 'from-blue-500 to-cyan-600',
       link: '/schedule',
     },
     {
       id: 'map',
-      title: 'Nearby Healthcare',
-      description: 'Find hospitals, clinics, and pharmacies near you with real-time directions.',
+      title: t('home.map'),
+      description: t('home.map.desc'),
       icon: <FaMapMarkedAlt className="text-5xl" />,
       color: 'from-purple-500 to-pink-600',
       link: '/map',
     },
     {
       id: 'doctors',
-      title: 'Find Doctors',
-      description: 'Search and connect with qualified doctors and specialists in your region.',
+      title: t('home.doctors'),
+      description: t('home.doctors.desc'),
       icon: <FaUserMd className="text-5xl" />,
       color: 'from-orange-500 to-red-600',
       link: '/doctors',
     },
     {
       id: 'emergency',
-      title: 'Emergency Services',
-      description: 'Quick access to emergency contacts, ambulance services, and first aid guides.',
+      title: t('home.emergency'),
+      description: t('home.emergency.desc'),
       icon: <FaAmbulance className="text-5xl" />,
       color: 'from-red-500 to-rose-600',
       link: '/emergency',
     },
     {
       id: 'health-records',
-      title: 'Health Records',
-      description: 'Securely store and access your medical records, prescriptions, and test results.',
+      title: t('home.records'),
+      description: t('home.records.desc'),
       icon: <FaHeartbeat className="text-5xl" />,
       color: 'from-teal-500 to-green-600',
       link: '/records',
     },
     {
       id: 'video-consult',
-      title: 'Video Consultation',
-      description: 'Face-to-face virtual consultation with doctors via HD video call.',
+      title: t('video.title'),
+      description: t('video.subtitle'),
       icon: <FaVideo className="text-5xl" />,
       color: 'from-indigo-500 to-blue-600',
       link: '/video-consult',
@@ -67,10 +69,10 @@ const HomePage = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Welcome to Swaasthmitra
+            {t('home.title')}
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Your Complete Healthcare Companion for Rural India
+            {t('home.subtitle')}
           </p>
           <div className="inline-flex items-center space-x-2 bg-green-100 text-green-800 px-6 py-3 rounded-full">
             <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>

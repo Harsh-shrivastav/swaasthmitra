@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { ConsultationProvider } from './context/ConsultationContext';
+import { LanguageProvider } from './context/LanguageContext';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import ConsultationPage from './pages/ConsultationPage';
@@ -14,23 +15,25 @@ import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
-    <ConsultationProvider>
-      <div className="min-h-screen">
-        <ScrollToTop />
-        <Header />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/consultation" element={<ConsultationPage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/doctors" element={<DoctorsPage />} />
-          <Route path="/emergency" element={<EmergencyPage />} />
-          <Route path="/records" element={<RecordsPage />} />
-          <Route path="/video-consult" element={<VideoConsultPage />} />
-        </Routes>
-      </div>
-    </ConsultationProvider>
+    <LanguageProvider>
+      <ConsultationProvider>
+        <div className="min-h-screen">
+          <ScrollToTop />
+          <Header />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/consultation" element={<ConsultationPage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
+            <Route path="/map" element={<MapPage />} />
+            <Route path="/doctors" element={<DoctorsPage />} />
+            <Route path="/emergency" element={<EmergencyPage />} />
+            <Route path="/records" element={<RecordsPage />} />
+            <Route path="/video-consult" element={<VideoConsultPage />} />
+          </Routes>
+        </div>
+      </ConsultationProvider>
+    </LanguageProvider>
   );
 }
 

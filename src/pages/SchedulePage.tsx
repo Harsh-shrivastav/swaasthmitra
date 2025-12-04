@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaUserMd, FaClock, FaHospital, FaCheckCircle, FaTimesCircle, FaList } from 'react-icons/fa';
 import { db, Appointment } from '../services/database';
+import { useLanguage } from '../context/LanguageContext';
 
 const SchedulePage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showAppointmentsList, setShowAppointmentsList] = useState(false);
@@ -57,13 +59,13 @@ const SchedulePage = () => {
     // Validation
     if (!formData.patientName || !formData.age || !formData.gender || !formData.phone || 
         !formData.date || !formData.time || !formData.specialty) {
-      alert('Please fill in all required fields');
+      alert(t('schedule.alertFillRequired'));
       return;
     }
 
     // Phone validation
     if (formData.phone.length < 10) {
-      alert('Please enter a valid phone number');
+      alert(t('schedule.alertPhoneInvalid'));
       return;
     }
 
@@ -108,7 +110,7 @@ const SchedulePage = () => {
   };
 
   const cancelAppointment = async (id: number) => {
-    if (window.confirm('Are you sure you want to cancel this appointment?')) {
+    if (window.confirm(t('schedule.cancelAppointment'))) {
       try {
         await db.appointments.update(id, { 
           status: 'cancelled',
@@ -117,7 +119,7 @@ const SchedulePage = () => {
         await loadAppointments();
       } catch (error) {
         console.error('Failed to cancel appointment:', error);
-        alert('Failed to cancel appointment. Please try again.');
+        alert(t('common.error'));
       }
     }
   };
@@ -148,8 +150,8 @@ const SchedulePage = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <FaCalendarAlt className="text-6xl text-blue-600 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Schedule Appointment</h1>
-            <p className="text-lg text-gray-600">Book your appointment with healthcare providers</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('schedule.title')}</h1>
+            <p className="text-lg text-gray-600">{t('schedule.subtitle')}</p>
             
             {appointments.length > 0 && (
               <button
@@ -157,7 +159,7 @@ const SchedulePage = () => {
                 className="mt-4 btn-secondary px-6 py-2 flex items-center space-x-2 mx-auto"
               >
                 <FaList />
-                <span>View My Appointments ({appointments.length})</span>
+                <span>{t('common.viewAppointments')} ({appointments.length})</span>
               </button>
             )}
           </div>
@@ -166,7 +168,7 @@ const SchedulePage = () => {
           {showAppointmentsList && appointments.length > 0 && (
             <div className="card mb-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">My Appointments</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('schedule.myAppointments')}</h2>
                 <button
                   onClick={() => setShowAppointmentsList(false)}
                   className="text-gray-500 hover:text-gray-700"
@@ -190,26 +192,26 @@ const SchedulePage = () => {
                     
                     <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                       <div>
-                        <span className="text-gray-600">Date:</span>
+                        <span className="text-gray-600">{t('common.date')}:</span>
                         <span className="ml-2 font-semibold">{new Date(appointment.date).toLocaleDateString('en-IN')}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Time:</span>
+                        <span className="text-gray-600">{t('common.time')}:</span>
                         <span className="ml-2 font-semibold">{appointment.time}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Phone:</span>
+                        <span className="text-gray-600">{t('schedule.phone')}:</span>
                         <span className="ml-2">{appointment.phone}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Age:</span>
-                        <span className="ml-2">{appointment.age} years</span>
+                        <span className="text-gray-600">{t('common.age')}:</span>
+                        <span className="ml-2">{appointment.age}</span>
                       </div>
                     </div>
                     
                     {appointment.reason && (
                       <div className="text-sm bg-gray-50 p-3 rounded mb-3">
-                        <span className="font-semibold text-gray-700">Reason:</span>
+                        <span className="font-semibold text-gray-700">{t('schedule.reasonForVisit')}:</span>
                         <p className="text-gray-600 mt-1">{appointment.reason}</p>
                       </div>
                     )}
@@ -219,7 +221,7 @@ const SchedulePage = () => {
                         onClick={() => appointment.id && cancelAppointment(appointment.id)}
                         className="text-red-600 hover:text-red-800 text-sm font-semibold"
                       >
-                        Cancel Appointment
+                        {t('schedule.cancelAppointment')}
                       </button>
                     )}
                   </div>
@@ -235,12 +237,12 @@ const SchedulePage = () => {
               <div>
                 <h2 className="text-2xl font-semibold mb-4 flex items-center">
                   <FaUserMd className="mr-2 text-primary" />
-                  Personal Information
+                  {t('common.personalInfo')}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
+                      {t('common.name')} *
                     </label>
                     <input
                       type="text"
@@ -249,12 +251,12 @@ const SchedulePage = () => {
                       value={formData.patientName}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Enter your name"
+                      placeholder={t('common.name')}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Age *
+                      {t('common.age')} *
                     </label>
                     <input
                       type="number"
@@ -263,12 +265,12 @@ const SchedulePage = () => {
                       value={formData.age}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Your age"
+                      placeholder={t('common.age')}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender *
+                      {t('schedule.gender')} *
                     </label>
                     <select
                       name="gender"
@@ -277,15 +279,15 @@ const SchedulePage = () => {
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     >
-                      <option value="">Select gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="">{t('schedule.selectGender')}</option>
+                      <option value="male">{t('schedule.gender.male')}</option>
+                      <option value="female">{t('schedule.gender.female')}</option>
+                      <option value="other">{t('schedule.gender.other')}</option>
                     </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number *
+                      {t('schedule.phone')} *
                     </label>
                     <input
                       type="tel"
@@ -299,7 +301,7 @@ const SchedulePage = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email (Optional)
+                      {t('schedule.emailOptional')}
                     </label>
                     <input
                       type="email"
@@ -317,12 +319,12 @@ const SchedulePage = () => {
               <div>
                 <h2 className="text-2xl font-semibold mb-4 flex items-center">
                   <FaClock className="mr-2 text-primary" />
-                  Appointment Details
+                  {t('common.appointmentDetails')}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Date *
+                      {t('common.date')} *
                     </label>
                     <input
                       type="date"
@@ -336,7 +338,7 @@ const SchedulePage = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Time *
+                      {t('common.time')} *
                     </label>
                     <select
                       name="time"
@@ -345,7 +347,7 @@ const SchedulePage = () => {
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     >
-                      <option value="">Select time</option>
+                      <option value="">{t('schedule.selectTime')}</option>
                       <option value="09:00">09:00 AM</option>
                       <option value="10:00">10:00 AM</option>
                       <option value="11:00">11:00 AM</option>
@@ -358,7 +360,7 @@ const SchedulePage = () => {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Specialty *
+                      {t('common.specialty')} *
                     </label>
                     <select
                       name="specialty"
@@ -367,7 +369,7 @@ const SchedulePage = () => {
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     >
-                      <option value="">Select specialty</option>
+                      <option value="">{t('schedule.selectSpecialty')}</option>
                       {specialties.map((specialty) => (
                         <option key={specialty} value={specialty}>
                           {specialty}
@@ -377,7 +379,7 @@ const SchedulePage = () => {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Doctor (Optional)
+                      {t('schedule.preferredDoctorOptional')}
                     </label>
                     <input
                       type="text"
@@ -385,7 +387,7 @@ const SchedulePage = () => {
                       value={formData.doctor}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Leave blank for any available doctor"
+                      placeholder={t('schedule.anyAvailableDoctor')}
                     />
                   </div>
                 </div>
@@ -395,7 +397,7 @@ const SchedulePage = () => {
               <div>
                 <h2 className="text-2xl font-semibold mb-4 flex items-center">
                   <FaHospital className="mr-2 text-primary" />
-                  Reason for Visit
+                  {t('schedule.reasonForVisit')}
                 </h2>
                 <textarea
                   name="reason"
@@ -403,21 +405,21 @@ const SchedulePage = () => {
                   onChange={handleChange}
                   rows={4}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Briefly describe your symptoms or reason for appointment..."
+                  placeholder={t('schedule.reasonPlaceholder')}
                 ></textarea>
               </div>
 
               {/* Submit Button */}
               <div className="flex space-x-4">
                 <button type="submit" className="btn-primary flex-1">
-                  Book Appointment
+                  {t('schedule.book')}
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate('/home')}
                   className="btn-secondary"
                 >
-                  Cancel
+                  {t('schedule.cancel')}
                 </button>
               </div>
             </form>
@@ -429,42 +431,42 @@ const SchedulePage = () => {
               <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8">
                 <div className="text-center">
                   <FaCheckCircle className="text-6xl text-green-500 mx-auto mb-4" />
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">Appointment Confirmed!</h2>
-                  <p className="text-gray-600 mb-6">Your appointment has been successfully scheduled</p>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('schedule.confirmedTitle')}</h2>
+                  <p className="text-gray-600 mb-6">{t('schedule.confirmedSubtitle')}</p>
                   
                   <div className="bg-gray-50 rounded-lg p-6 mb-6 text-left">
-                    <h3 className="font-bold text-lg mb-4 text-gray-900">Appointment Details</h3>
+                    <h3 className="font-bold text-lg mb-4 text-gray-900">{t('schedule.detailsTitle')}</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Patient:</span>
+                        <span className="text-gray-600">{t('schedule.patient')}:</span>
                         <span className="font-semibold">{confirmedAppointment.patientName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Date:</span>
+                        <span className="text-gray-600">{t('common.date')}:</span>
                         <span className="font-semibold">{new Date(confirmedAppointment.date).toLocaleDateString('en-IN')}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Time:</span>
+                        <span className="text-gray-600">{t('common.time')}:</span>
                         <span className="font-semibold">{confirmedAppointment.time}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Specialty:</span>
+                        <span className="text-gray-600">{t('common.specialty')}:</span>
                         <span className="font-semibold">{confirmedAppointment.specialty}</span>
                       </div>
                       {confirmedAppointment.doctor && (
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Doctor:</span>
+                          <span className="text-gray-600">{t('schedule.preferredDoctorOptional').split(' ')[0]}:</span>
                           <span className="font-semibold">{confirmedAppointment.doctor}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Contact:</span>
+                        <span className="text-gray-600">{t('schedule.phone')}:</span>
                         <span className="font-semibold">{confirmedAppointment.phone}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Status:</span>
+                        <span className="text-gray-600">{t('schedule.status')}:</span>
                         <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">
-                          PENDING CONFIRMATION
+                          {t('schedule.pending')}
                         </span>
                       </div>
                     </div>
@@ -472,8 +474,8 @@ const SchedulePage = () => {
 
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
                     <p className="text-sm text-blue-900">
-                      <strong>📱 Next Steps:</strong><br />
-                      You will receive a confirmation call/SMS within 2 hours to confirm your appointment time.
+                      <strong>{t('schedule.nextStepsTitle')}</strong><br />
+                      {t('schedule.nextStepsText')}
                     </p>
                   </div>
 
@@ -485,7 +487,7 @@ const SchedulePage = () => {
                       }}
                       className="flex-1 btn-primary"
                     >
-                      Done
+                      {t('schedule.done')}
                     </button>
                     <button
                       onClick={() => {
@@ -495,7 +497,7 @@ const SchedulePage = () => {
                       }}
                       className="flex-1 btn-secondary"
                     >
-                      View All Appointments
+                      {t('schedule.viewAll')}
                     </button>
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import { geminiService } from '../services/geminiService';
 import { FaRobot, FaUser, FaPhone, FaFileAlt, FaHistory, FaTrash, FaDownload } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import { db } from '../services/database';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Message {
   id: string;
@@ -21,6 +22,7 @@ interface SavedConsultation {
 }
 
 const ConsultationPage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -43,7 +45,7 @@ const ConsultationPage = () => {
       
       const welcomeMessage: Message = {
         id: Date.now().toString(),
-        text: "Good day. I am **Dr. Swaasthmitra**, an AI medical assistant.\n\nI provide professional medical guidance while emphasizing that I am an AI system, not a replacement for licensed physicians.\n\n**For emergencies, call 108 immediately.**\n\nHow may I assist you today? Please describe your symptoms.",
+        text: t('consultation.welcome'),
         sender: 'bot',
         timestamp: new Date(),
       };
@@ -276,9 +278,9 @@ const ConsultationPage = () => {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                  🩺 AI Medical Consultation
+                  🩺 {t('consultation.title')}
                 </h1>
-                <p className="text-gray-600 mt-2">Chat with Dr. Swaasthmitra - Your AI Health Assistant</p>
+                <p className="text-gray-600 mt-2">{t('consultation.subtitle')}</p>
               </div>
               <div className="flex gap-3">
                 {consultationHistory.length > 0 && (
@@ -287,7 +289,7 @@ const ConsultationPage = () => {
                     className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition flex items-center gap-2"
                   >
                     <FaHistory />
-                    History ({consultationHistory.length})
+                    {t('consultation.history')} ({consultationHistory.length})
                   </button>
                 )}
                 {messages.length > 2 && (
@@ -297,20 +299,20 @@ const ConsultationPage = () => {
                     className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2 disabled:bg-gray-400"
                   >
                     <FaFileAlt />
-                    {isGeneratingSummary ? 'Generating...' : 'Summary'}
+                    {isGeneratingSummary ? t('common.loading') : t('consultation.summary')}
                   </button>
                 )}
                 <button
                   onClick={handleNewConsultation}
                   className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
                 >
-                  New Chat
+                  {t('consultation.startNewConsultation')}
                 </button>
                 <button
                   onClick={() => navigate('/home')}
                   className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
                 >
-                  Back
+                  {t('consultation.back')}
                 </button>
               </div>
             </div>
@@ -323,7 +325,7 @@ const ConsultationPage = () => {
                 <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
                   <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
                     <FaHistory />
-                    Consultation History
+                    {t('consultation.historyModal.title')}
                   </h2>
                   <button
                     onClick={() => setShowHistory(false)}
@@ -337,7 +339,7 @@ const ConsultationPage = () => {
                   {consultationHistory.length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
                       <FaHistory className="text-6xl mx-auto mb-4 text-gray-300" />
-                      <p>No past consultations found</p>
+                      <p>{t('consultation.historyModal.empty')}</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -355,7 +357,7 @@ const ConsultationPage = () => {
                                 })}
                               </h3>
                               <p className="text-sm text-gray-600 mt-1">
-                                {consultation.messages.filter(m => m.sender === 'user').length} messages exchanged
+                                {consultation.messages.filter(m => m.sender === 'user').length} {t('consultation.historyModal.messagesExchanged')}
                               </p>
                             </div>
                             <div className="flex gap-2">
@@ -378,7 +380,7 @@ const ConsultationPage = () => {
                           
                           {consultation.messages.length > 0 && (
                             <div className="bg-gray-50 p-3 rounded mb-3 text-sm">
-                              <strong className="text-gray-700">First message:</strong>
+                              <strong className="text-gray-700">{t('consultation.historyModal.firstMessage')}</strong>
                               <p className="text-gray-600 mt-1 line-clamp-2">
                                 {consultation.messages.find(m => m.sender === 'user')?.text}
                               </p>
@@ -388,7 +390,7 @@ const ConsultationPage = () => {
                           {consultation.soapNote && (
                             <div className="mb-3">
                               <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                ✓ SOAP Note Available
+                                {t('consultation.historyModal.soapAvailable')}
                               </span>
                             </div>
                           )}
@@ -397,7 +399,7 @@ const ConsultationPage = () => {
                             onClick={() => loadPastConsultation(consultation)}
                             className="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition font-semibold"
                           >
-                            View Consultation
+                            {t('consultation.historyModal.view')}
                           </button>
                         </div>
                       ))}
@@ -521,7 +523,7 @@ const ConsultationPage = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Describe your symptoms... (Press Enter to send)"
+                placeholder={t('consultation.placeholder')}
                 className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 rows={3}
                 disabled={isLoading}
@@ -531,20 +533,20 @@ const ConsultationPage = () => {
                 disabled={isLoading || !input.trim()}
                 className="px-8 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition font-semibold self-end"
               >
-                Send
+                {t('consultation.send')}
               </button>
             </div>
             
             <div className="flex items-center justify-between">
               <p className="text-xs text-gray-500">
-                🚨 For emergencies, call 108 immediately
+                🚨 {t('consultation.emergency.message')}
               </p>
               <button
                 onClick={handleEmergency}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 text-sm"
               >
                 <FaPhone />
-                <span>Emergency 108</span>
+                <span>{t('emergency.call')} 108</span>
               </button>
             </div>
           </div>

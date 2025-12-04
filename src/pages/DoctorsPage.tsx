@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUserMd, FaStar, FaPhone, FaCalendar, FaLanguage, FaSearch, FaFilter } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Doctor {
   id: number;
@@ -18,6 +19,7 @@ interface Doctor {
 }
 
 const DoctorsPage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
@@ -138,8 +140,8 @@ const DoctorsPage = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <FaUserMd className="text-6xl text-orange-600 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Find Doctors</h1>
-            <p className="text-lg text-gray-600">Search and connect with qualified doctors in your area</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('doctors.title')}</h1>
+            <p className="text-lg text-gray-600">{t('doctors.subtitle')}</p>
           </div>
 
           {/* Search and Filters */}
@@ -150,7 +152,7 @@ const DoctorsPage = () => {
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search doctors, specialties..."
+                  placeholder={t('doctors.search')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -240,7 +242,7 @@ const DoctorsPage = () => {
                         className="flex-1 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-semibold transition flex items-center justify-center space-x-2"
                       >
                         <FaCalendar />
-                        <span>Book Appointment</span>
+                        <span>{t('doctors.book')}</span>
                       </button>
                       <a
                         href={`tel:${doctor.phone}`}

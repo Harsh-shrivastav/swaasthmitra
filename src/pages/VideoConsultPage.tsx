@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaVideo, FaVideoSlash, FaMicrophone, FaMicrophoneSlash, FaPhone, FaDesktop, FaComments, FaUserMd, FaClock } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Doctor {
   id: number;
@@ -20,6 +21,7 @@ interface ChatMessage {
 }
 
 const VideoConsultPage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [isInCall, setIsInCall] = useState(false);
@@ -330,7 +332,7 @@ const VideoConsultPage = () => {
                       value={chatInput}
                       onChange={(e) => setChatInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
-                      placeholder="Type a message..."
+                      placeholder={t('video.chatPlaceholder')}
                       className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     <button
@@ -425,10 +427,10 @@ const VideoConsultPage = () => {
               <FaVideo className="text-5xl text-white" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Virtual Video Consultation
+              {t('video.title')}
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Connect face-to-face with qualified doctors from the comfort of your home
+              {t('video.subtitle')}
             </p>
           </div>
 
@@ -436,9 +438,9 @@ const VideoConsultPage = () => {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center">
                 <div className="w-20 h-20 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <h3 className="text-2xl font-bold mb-2">Connecting...</h3>
-                <p className="text-gray-600 mb-4">Setting up your video call with {selectedDoctor?.name}</p>
-                <p className="text-sm text-gray-500">Please allow camera and microphone access</p>
+                <h3 className="text-2xl font-bold mb-2">{t('video.connecting.title')}</h3>
+                <p className="text-gray-600 mb-4">{t('video.connecting.subtitle')} {selectedDoctor?.name}</p>
+                <p className="text-sm text-gray-500">{t('video.connecting.permission')}</p>
               </div>
             </div>
           )}
@@ -494,7 +496,7 @@ const VideoConsultPage = () => {
                       }`}
                     >
                       <FaVideo />
-                      <span>{doctor.status === 'available' ? 'Start Video Call' : 'Currently Unavailable'}</span>
+                      <span>{doctor.status === 'available' ? t('common.startVideoCall') : t('common.currentlyUnavailable')}</span>
                     </button>
                   </div>
                 </div>
@@ -504,28 +506,28 @@ const VideoConsultPage = () => {
 
           {/* Features */}
           <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Consultation Features</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('video.features.title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-6">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <FaVideo className="text-3xl text-blue-600" />
                 </div>
-                <h3 className="font-bold text-lg mb-2">HD Video Quality</h3>
-                <p className="text-gray-600 text-sm">Crystal clear video with adaptive streaming</p>
+                <h3 className="font-bold text-lg mb-2">{t('video.features.hd.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('video.features.hd.desc')}</p>
               </div>
               <div className="text-center p-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <FaDesktop className="text-3xl text-green-600" />
                 </div>
-                <h3 className="font-bold text-lg mb-2">Screen Sharing</h3>
-                <p className="text-gray-600 text-sm">Share reports and test results during consultation</p>
+                <h3 className="font-bold text-lg mb-2">{t('video.features.share.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('video.features.share.desc')}</p>
               </div>
               <div className="text-center p-6">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <FaComments className="text-3xl text-purple-600" />
                 </div>
-                <h3 className="font-bold text-lg mb-2">Real-time Chat</h3>
-                <p className="text-gray-600 text-sm">Text chat alongside video for better communication</p>
+                <h3 className="font-bold text-lg mb-2">{t('video.features.chat.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('video.features.chat.desc')}</p>
               </div>
             </div>
           </div>

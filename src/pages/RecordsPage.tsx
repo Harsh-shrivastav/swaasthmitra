@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHeartbeat, FaFileMedical, FaPills, FaVial, FaAllergies, FaPlus, FaDownload, FaTrash, FaEdit, FaTimes, FaSave } from 'react-icons/fa';
 import { db, HealthRecord, PersonalInfo } from '../services/database';
+import { useLanguage } from '../context/LanguageContext';
 
 const RecordsPage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'all' | 'prescriptions' | 'reports' | 'visits'>('all');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -256,26 +258,26 @@ const RecordsPage = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <FaHeartbeat className="text-6xl text-teal-600 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Health Records</h1>
-            <p className="text-lg text-gray-600">Securely store and access your medical records</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('records.title')}</h1>
+            <p className="text-lg text-gray-600">{t('records.subtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Personal Health Info */}
             <div className="lg:col-span-1">
               <div className="card mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Personal Info</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('common.personalInfo')}</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-600">Blood Group</span>
+                    <span className="text-gray-600">{t('common.bloodGroup')}</span>
                     <span className="font-bold text-red-600">{personalInfo.bloodGroup}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-600">Height</span>
+                    <span className="text-gray-600">{t('common.height')}</span>
                     <span className="font-semibold">{personalInfo.height}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-600">Weight</span>
+                    <span className="text-gray-600">{t('common.weight')}</span>
                     <span className="font-semibold">{personalInfo.weight}</span>
                   </div>
                   <div className="py-2">
@@ -306,18 +308,18 @@ const RecordsPage = () => {
 
               {/* Quick Stats */}
               <div className="card">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Stats</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">{t('records.quickStats')}</h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Total Records</span>
+                    <span className="text-gray-600">{t('records.totalRecords')}</span>
                     <span className="font-bold text-2xl text-primary">{records.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Prescriptions</span>
+                    <span className="text-gray-600">{t('common.prescriptions')}</span>
                     <span className="font-bold text-xl">{records.filter(r => r.type === 'prescription').length}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Reports</span>
+                    <span className="text-gray-600">{t('common.reports')}</span>
                     <span className="font-bold text-xl">{records.filter(r => r.type === 'report').length}</span>
                   </div>
                 </div>
@@ -336,7 +338,7 @@ const RecordsPage = () => {
                         activeTab === 'all' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
                     >
-                      All Records
+                      {t('common.allRecords')}
                     </button>
                     <button
                       onClick={() => setActiveTab('prescriptions')}
@@ -344,7 +346,7 @@ const RecordsPage = () => {
                         activeTab === 'prescriptions' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
                     >
-                      Prescriptions
+                      {t('common.prescriptions')}
                     </button>
                     <button
                       onClick={() => setActiveTab('reports')}
@@ -352,7 +354,7 @@ const RecordsPage = () => {
                         activeTab === 'reports' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
                     >
-                      Reports
+                      {t('common.reports')}
                     </button>
                     <button
                       onClick={() => setActiveTab('visits')}
@@ -360,7 +362,7 @@ const RecordsPage = () => {
                         activeTab === 'visits' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
                     >
-                      Visits
+                      {t('common.visits')}
                     </button>
                   </div>
                   <button
@@ -368,7 +370,7 @@ const RecordsPage = () => {
                     className="btn-primary flex items-center space-x-2"
                   >
                     <FaPlus />
-                    <span>Add Record</span>
+                    <span>{t('common.addRecord')}</span>
                   </button>
                 </div>
               </div>
@@ -377,7 +379,7 @@ const RecordsPage = () => {
               {loading && (
                 <div className="text-center py-12">
                   <div className="animate-spin text-6xl text-primary mx-auto mb-4">⏳</div>
-                  <p className="text-gray-600">Loading records...</p>
+                  <p className="text-gray-600">{t('records.loading')}</p>
                 </div>
               )}
 
@@ -454,8 +456,8 @@ const RecordsPage = () => {
               {!loading && filteredRecords.length === 0 && (
                 <div className="text-center py-12 card">
                   <FaFileMedical className="text-6xl text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-600 mb-2">No records found</h3>
-                  <p className="text-gray-500 mb-4">Start adding your health records to keep track of your medical history</p>
+                  <h3 className="text-2xl font-bold text-gray-600 mb-2">{t('records.emptyTitle')}</h3>
+                  <p className="text-gray-500 mb-4">{t('records.emptySubtitle')}</p>
                   <button
                     onClick={() => setShowAddModal(true)}
                     className="btn-primary"
@@ -521,7 +523,7 @@ const RecordsPage = () => {
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      placeholder="e.g., Blood Test Results"
+                      placeholder={t('records.form.title.placeholder')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
@@ -548,7 +550,7 @@ const RecordsPage = () => {
                       type="text"
                       value={formData.doctor || ''}
                       onChange={(e) => setFormData({ ...formData, doctor: e.target.value })}
-                      placeholder="e.g., Dr. Rajesh Kumar"
+                      placeholder={t('records.form.doctor.placeholder')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
@@ -562,7 +564,7 @@ const RecordsPage = () => {
                       type="text"
                       value={formData.hospital || ''}
                       onChange={(e) => setFormData({ ...formData, hospital: e.target.value })}
-                      placeholder="e.g., Apollo Hospital"
+                      placeholder={t('records.form.hospital.placeholder')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
@@ -575,7 +577,7 @@ const RecordsPage = () => {
                     <textarea
                       value={formData.notes}
                       onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                      placeholder="Detailed notes about this record..."
+                      placeholder={t('records.form.notes.placeholder')}
                       rows={4}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                     />
@@ -588,8 +590,8 @@ const RecordsPage = () => {
                     </label>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                       <FaFileMedical className="text-4xl text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">File upload coming soon...</p>
-                      <p className="text-xs text-gray-400 mt-1">PDF, Images (JPG, PNG)</p>
+                      <p className="text-sm text-gray-500">{t('records.upload.soon')}</p>
+                      <p className="text-xs text-gray-400 mt-1">{t('records.upload.types')}</p>
                     </div>
                   </div>
 
@@ -620,7 +622,7 @@ const RecordsPage = () => {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
               <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 my-8">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">Edit Personal Information</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">{t('records.editPersonalInfo')}</h2>
                   <button
                     onClick={() => setShowEditPersonalInfo(false)}
                     className="text-gray-500 hover:text-gray-700 text-3xl leading-none"

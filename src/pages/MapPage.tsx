@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon, LatLngExpression } from 'leaflet';
 import { FaMapMarkedAlt, FaHospital, FaClinicMedical, FaPills, FaAmbulance, FaSearch, FaLocationArrow } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HealthcareFacility {
   id: number;
@@ -23,6 +24,7 @@ function ChangeView({ center, zoom }: { center: LatLngExpression; zoom: number }
 }
 
 const MapPage = () => {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedFacility, setSelectedFacility] = useState<number | null>(null);
@@ -177,8 +179,8 @@ const MapPage = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <FaMapMarkedAlt className="text-6xl text-purple-600 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Nearby Healthcare Facilities</h1>
-            <p className="text-lg text-gray-600">Find hospitals, clinics, and pharmacies near you</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('map.title')}</h1>
+            <p className="text-lg text-gray-600">{t('map.subtitle')}</p>
           </div>
 
           {/* Search and Filter */}
@@ -189,7 +191,7 @@ const MapPage = () => {
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search by name or location..."
+                  placeholder={t('common.searchLocation')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -202,10 +204,10 @@ const MapPage = () => {
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
-                <option value="all">All Types</option>
-                <option value="hospital">Hospitals</option>
-                <option value="clinic">Clinics</option>
-                <option value="pharmacy">Pharmacies</option>
+                <option value="all">{t('common.allTypes')}</option>
+                <option value="hospital">{t('map.hospitals')}</option>
+                <option value="clinic">{t('map.clinics')}</option>
+                <option value="pharmacy">{t('map.pharmacies')}</option>
                 <option value="ambulance">Ambulance</option>
               </select>
 
@@ -215,7 +217,7 @@ const MapPage = () => {
                 className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center space-x-2"
               >
                 <FaLocationArrow />
-                <span>My Location</span>
+                <span>{t('common.myLocation')}</span>
               </button>
             </div>
           </div>
@@ -276,7 +278,7 @@ const MapPage = () => {
                               onClick={() => getDirections(facility)}
                               className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
                             >
-                              🧭 Get Directions
+                              🧭 {t('common.directions')}
                             </button>
                           </div>
                         </div>
@@ -290,7 +292,7 @@ const MapPage = () => {
             {/* Facilities List */}
             <div className="space-y-4 max-h-[600px] overflow-y-auto">
               <h2 className="text-xl font-bold text-gray-900 sticky top-0 bg-gray-50 py-2">
-                {filteredFacilities.length} Facilities Found
+                {filteredFacilities.length} {t('common.facilitiesFound')}
               </h2>
 
               {filteredFacilities.map((facility) => (
@@ -352,8 +354,8 @@ const MapPage = () => {
               <div className="flex items-center space-x-4">
                 <FaAmbulance className="text-5xl text-red-600" />
                 <div>
-                  <h3 className="text-2xl font-bold text-red-900">Medical Emergency?</h3>
-                  <p className="text-red-700">Call for immediate ambulance service</p>
+                  <h3 className="text-2xl font-bold text-red-900">{t('map.emergencyBanner.title')}</h3>
+                  <p className="text-red-700">{t('map.emergencyBanner.subtitle')}</p>
                 </div>
               </div>
               <a

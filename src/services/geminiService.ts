@@ -166,28 +166,53 @@ Keep it professional and brief.`;
       throw new Error('Gemini API key not configured. Please check your .env file.');
     }
 
-    try {
-      const result = await this.chatSession.sendMessage(message);
-      const text = result.response.text();
-      
-      if (!text) {
-        throw new Error('Empty response from Gemini API');
+    const maxRetries = 3;
+    let lastError: any;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const result = await this.chatSession.sendMessage(message);
+        const text = result.response.text();
+        
+        if (!text) {
+          throw new Error('Empty response from Gemini API');
+        }
+        
+        return text;
+      } catch (error: any) {
+        lastError = error;
+        console.error(`Gemini API Error (attempt ${attempt + 1}/${maxRetries}):`, error);
+        
+        // Check for rate limit errors
+        const errorMessage = error.message?.toLowerCase() || '';
+        const isRateLimitError = errorMessage.includes('quota') || 
+                                 errorMessage.includes('resource_exhausted') ||
+                                 errorMessage.includes('429');
+        
+        // If it's a rate limit error and we have retries left, wait and retry
+        if (isRateLimitError && attempt < maxRetries - 1) {
+          // Exponential backoff: 1s, 2s, 4s
+          const delayMs = Math.pow(2, attempt) * 1000;
+          console.log(`Rate limit detected. Retrying in ${delayMs}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+          continue;
+        }
+        
+        // For non-rate-limit errors or final attempt, handle accordingly
+        if (error.message?.includes('API key')) {
+          throw new Error('Invalid API key. Please check your VITE_GEMINI_API_KEY in .env file.');
+        }
+        
+        if (isRateLimitError) {
+          throw new Error('API quota exceeded. Please try again later or check your Google Cloud quota.');
+        }
+        
+        throw new Error(`Gemini API Error: ${error.message || 'Unknown error'}`);
       }
-      
-      return text;
-    } catch (error: any) {
-      console.error('Gemini API Error:', error);
-      
-      if (error.message?.includes('API key')) {
-        throw new Error('Invalid API key. Please check your VITE_GEMINI_API_KEY in .env file.');
-      }
-      
-      if (error.message?.includes('quota')) {
-        throw new Error('API quota exceeded. Please try again later or check your Google Cloud quota.');
-      }
-      
-      throw new Error(`Gemini API Error: `);
     }
+
+    // This should not be reached, but TypeScript needs it
+    throw lastError;
   }
 
   resetChat() {

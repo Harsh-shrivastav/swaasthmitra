@@ -207,7 +207,7 @@ Keep it professional and brief.`;
           throw new Error('API quota exceeded. Please try again later or check your Google Cloud quota.');
         }
         
-        throw new Error(`Gemini API Error: `);
+        throw new Error(`Gemini API Error: ${error.message || 'Unknown error'}`);
       }
     }
 

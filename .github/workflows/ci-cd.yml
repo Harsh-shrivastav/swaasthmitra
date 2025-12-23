@@ -74,10 +74,12 @@ jobs:
       
       - name: Build project
         run: npm run build
+        # Note: Using dummy values for CI build check
+        # Actual environment variables are configured in Vercel
         env:
-          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
-          VITE_APP_NAME: ${{ secrets.VITE_APP_NAME || 'Swaasthmitra' }}
-          VITE_EMERGENCY_NUMBER: ${{ secrets.VITE_EMERGENCY_NUMBER || '108' }}
+          VITE_GEMINI_API_KEY: 'ci-build-check'
+          VITE_APP_NAME: 'Swaasthmitra'
+          VITE_EMERGENCY_NUMBER: '108'
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -87,7 +89,7 @@ jobs:
           retention-days: 7
 
   deploy:
-    name: Deploy to Production
+    name: Deploy to Vercel
     runs-on: ubuntu-latest
     needs: build-and-test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -96,30 +98,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Deploy to Vercel Production
+        uses: amondnet/vercel-action@v25
         with:
-          name: build-artifacts
-          path: dist/
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
       
-      # Add your deployment steps here
-      # Example for Vercel:
-      # - name: Deploy to Vercel
-      #   uses: amondnet/vercel-action@v25
-      #   with:
-      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
-      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-      #     vercel-args: '--prod'
-      
-      # Example for GitHub Pages:
-      # - name: Deploy to GitHub Pages
-      #   uses: peaceiris/actions-gh-pages@v4
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./dist
-      
-      - name: Deployment placeholder
+      - name: Deployment Summary
         run: |
-          echo "Build artifacts are ready for deployment"
-          echo "Configure your deployment target in this step"
+          echo "✅ Successfully deployed to Vercel"
+          echo "Environment variables are managed in Vercel dashboard"
+          echo "VITE_GEMINI_API_KEY is configured in Vercel environment settings"

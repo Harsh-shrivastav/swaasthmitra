@@ -120,7 +120,7 @@ I'm ready to listen. ` }],
     return this.chatSession;
   }
 
-  async generateSummary(conversationHistory: string): Promise<string> {
+  async generateSummary(_conversationHistory: string): Promise<string> {
     if (!this.chatSession) {
       throw new Error('No active chat session');
     }

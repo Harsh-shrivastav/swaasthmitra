@@ -1,7 +1,8 @@
 // Configuration for Gemini API
 const CONFIG = {
     // Gemini API Configuration
-    GEMINI_API_KEY: 'AIzaSyDuI-wlO-8qNEZPDuErajr73dPH6etnu5I', // Add your Gemini API key here
+    // SECURITY: Never hardcode API keys. Use environment variables instead.
+    GEMINI_API_KEY: '', // Set via environment variable VITE_GEMINI_API_KEY
     GEMINI_API_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
     
     // Application Settings

@@ -1,11 +1,10 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { FaBars, FaTimes, FaGlobe } from 'react-icons/fa';
 import { useLanguage } from '../context/LanguageContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
   const { language, toggleLanguage, t } = useLanguage();
 
   const navLinks = [

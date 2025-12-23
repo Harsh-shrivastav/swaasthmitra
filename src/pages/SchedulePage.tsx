@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaUserMd, FaClock, FaHospital, FaCheckCircle, FaTimesCircle, FaList } from 'react-icons/fa';
+import { FaCalendarAlt, FaUserMd, FaClock, FaHospital, FaCheckCircle, FaList } from 'react-icons/fa';
 import { db, Appointment } from '../services/database';
 import { useLanguage } from '../context/LanguageContext';
 
